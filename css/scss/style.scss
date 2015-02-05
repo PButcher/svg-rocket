@@ -1,0 +1,119 @@
+$color-background: #151515;
+$color-workspace: #333;
+$color-grey: #666;
+$color-dark-grey: #202020;
+$color-white: #FFF;
+$color-logo: #99FF00;
+$color-welcome-bg: #151515;
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: "Segoe UI", Calibri, "Myriad Pro", Myriad, "Trebuchet MS", Helvetica, Arial, sans-serif; 
+}
+header {
+	width: 100%;
+	height: 50px;
+	text-align: left;
+	line-height: 50px;
+	background-color: $color-background;
+
+	a {
+		text-align: center;
+		display: block;
+		float: left;
+		width: 50px;
+		height: 50px;
+		color: $color-grey;
+		text-decoration: none;
+
+		&:hover {
+			background-color: $color-dark-grey;
+		}
+		&.logo {
+			color: $color-logo;
+			width: auto;
+			padding: 0px 25px 0px 20px;
+			p {
+				font-weight: bold;
+				display: inline;
+				padding: 0px;
+				margin: 0px 0px 0px 10px;
+				width: auto;
+			}
+			&:hover {
+				background-color: $color-background;
+			}
+		}
+		&.active {
+			background-color: $color-workspace;
+			color: $color-grey;
+
+			&:hover {
+				color: $color-grey;
+			}
+		}
+	}
+}
+
+// WELCOME MODAL
+
+.welcome-modal {
+	z-index: 10;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: $color-welcome-bg;
+}
+.welcome {
+	position: absolute;
+	width: 750px;
+	height: 350px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
+	h1 {
+		margin-top: 30px;
+		margin-bottom: 50px;
+		text-align: center;
+		font-weight: normal;
+		font-size: 40pt;
+		color: $color-grey;
+	}
+	h2 {
+		padding-top: 40px;
+		margin: 0px;
+		text-align: center;
+		font-weight: normal;
+		color: $color-logo;
+		font-size: 25pt;
+	}
+	a {
+		display: block;
+		margin: 0 auto;
+		width: 250px;
+		height: 50px;
+		line-height: 50px;
+		color: $color-white;
+		background-color: $color-dark-grey;
+		text-align: center;
+		text-decoration: none;
+		box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	}
+}
+
+// APP SECTIONS
+
+.workspace-canvas, .workspace-output {
+	position: relative;
+	width: 100%;
+	height: auto;
+	background-color: $color-workspace;
+}
+.workspace-active {
+	display: none;
+}
+
+// ELEMENTS
