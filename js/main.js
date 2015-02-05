@@ -22,7 +22,8 @@ $(window).resize(function() {
 function resize() {
 
 	$('#welcome-modal').css("height", $(window).height());
-	$('.workspace-canvas').css("height", ($(window).innerHeight() - $('header').height()));
+	$('.workspace-canvas, .workspace-output').css("height", ($(window).innerHeight() - $('header').height()));
+	$('.ws-canvas-toolkit, .ws-canvas-wrapper').css("height", ($(window).innerHeight() - $('header').height()));
 }
 
 // Set up welcome modal
@@ -58,16 +59,16 @@ function pageTransition(dest) {
 		case "canvas":
 			$('#btn-ws-canvas').addClass("active");
 			$('#btn-ws-output').removeClass("active");
-			$('#workspace-output').hide();
-			$('#workspace-canvas').show();
+			$('#workspace-canvas').addClass("workspace-active");
+			$('#workspace-output').removeClass("workspace-active");
 			break;
 
 		// Show output page
 		case "output":
 			$('#btn-ws-output').addClass("active");
 			$('#btn-ws-canvas').removeClass("active");
-			$('#workspace-output').show();
-			$('#workspace-canvas').hide();
+			$('#workspace-output').addClass("workspace-active");
+			$('#workspace-canvas').removeClass("workspace-active");
 			break;
 
 		// Do nothing

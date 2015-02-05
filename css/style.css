@@ -80,12 +80,44 @@ header {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); }
 
 .workspace-canvas, .workspace-output {
+  display: none;
   position: relative;
   width: 100%;
   height: auto;
   background-color: #333; }
 
 .workspace-active {
-  display: none; }
+  display: block; }
+
+.ws-canvas-toolkit {
+  float: left;
+  width: 100px;
+  background-color: #202020; }
+  .ws-canvas-toolkit a {
+    display: block;
+    float: left;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    color: #FFF; }
+    .ws-canvas-toolkit a:hover {
+      background-color: #151515; }
+
+.ws-canvas-wrapper {
+  position: relative;
+  overflow: auto; }
+  .ws-canvas-wrapper .ws-canvas {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 550px;
+    height: 400px;
+    margin: auto;
+    background-color: #FFF;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    overflow: auto; }
 
 /*# sourceMappingURL=style.css.map */

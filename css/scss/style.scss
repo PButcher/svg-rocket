@@ -4,7 +4,7 @@ $color-grey: #666;
 $color-dark-grey: #202020;
 $color-white: #FFF;
 $color-logo: #99FF00;
-$color-welcome-bg: #151515;
+$color-vdark-grey: #151515;
 
 body {
 	margin: 0;
@@ -63,7 +63,7 @@ header {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background-color: $color-welcome-bg;
+	background-color: $color-vdark-grey;
 }
 .welcome {
 	position: absolute;
@@ -107,13 +107,54 @@ header {
 // APP SECTIONS
 
 .workspace-canvas, .workspace-output {
+	display: none;
 	position: relative;
 	width: 100%;
 	height: auto;
 	background-color: $color-workspace;
 }
 .workspace-active {
-	display: none;
+	display: block;
 }
 
-// ELEMENTS
+// WORKSPACE CANVAS ELEMENTS
+
+.ws-canvas-toolkit {
+	float: left;
+	width: 100px;
+	background-color: $color-dark-grey;
+
+	a {
+		display: block;
+		float: left;
+		width: 50px;
+		height: 50px;
+		line-height: 50px;
+		text-align: center;
+		color: $color-white;
+
+		&:hover {
+			background-color: $color-vdark-grey;
+		}
+	}
+}
+
+.ws-canvas-wrapper {
+
+	position: relative;
+	overflow: auto;
+
+	.ws-canvas {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		width: 550px;
+		height: 400px;
+		margin: auto;
+		background-color: $color-white;
+		box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+		overflow: auto;
+	}
+}
