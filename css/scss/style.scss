@@ -121,20 +121,37 @@ header {
 
 .ws-canvas-toolkit {
 	float: left;
-	width: 100px;
+	width: 50px;
 	background-color: $color-dark-grey;
 
-	a {
-		display: block;
-		float: left;
-		width: 50px;
-		height: 50px;
-		line-height: 50px;
-		text-align: center;
-		color: $color-white;
+	nav {
 
-		&:hover {
-			background-color: $color-vdark-grey;
+		margin-bottom: 10px;
+		overflow: auto;
+
+		a {
+			display: block;
+			float: left;
+			width: 50px;
+			height: 50px;
+			line-height: 50px;
+			text-align: center;
+			color: $color-white;
+
+			&:hover {
+				background-color: $color-vdark-grey;
+			}
+		}
+
+		input {
+
+			width: 40px;
+			margin: 0;
+			padding: 5px;
+			border: 0;
+			background-color: $color-grey;
+			color: $color-white;
+			text-align: center;
 		}
 	}
 }
@@ -142,7 +159,7 @@ header {
 .ws-canvas-wrapper {
 
 	position: relative;
-	overflow: auto;
+	overflow: scroll;
 
 	.ws-canvas {
 		position: absolute;

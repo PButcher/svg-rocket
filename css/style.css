@@ -91,22 +91,33 @@ header {
 
 .ws-canvas-toolkit {
   float: left;
-  width: 100px;
+  width: 50px;
   background-color: #202020; }
-  .ws-canvas-toolkit a {
-    display: block;
-    float: left;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    color: #FFF; }
-    .ws-canvas-toolkit a:hover {
-      background-color: #151515; }
+  .ws-canvas-toolkit nav {
+    margin-bottom: 10px;
+    overflow: auto; }
+    .ws-canvas-toolkit nav a {
+      display: block;
+      float: left;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      color: #FFF; }
+      .ws-canvas-toolkit nav a:hover {
+        background-color: #151515; }
+    .ws-canvas-toolkit nav input {
+      width: 40px;
+      margin: 0;
+      padding: 5px;
+      border: 0;
+      background-color: #666;
+      color: #FFF;
+      text-align: center; }
 
 .ws-canvas-wrapper {
   position: relative;
-  overflow: auto; }
+  overflow: scroll; }
   .ws-canvas-wrapper .ws-canvas {
     position: absolute;
     top: 0;
