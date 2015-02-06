@@ -129,6 +129,7 @@ header {
 		margin-bottom: 10px;
 		overflow: auto;
 
+
 		a {
 			display: block;
 			float: left;
@@ -140,6 +141,18 @@ header {
 
 			&:hover {
 				background-color: $color-vdark-grey;
+			}
+		}
+
+		&.toolkit-inputs {
+
+			a {
+
+				pointer-events: none;
+
+				&:hover {
+					background-color: $color-dark-grey;
+				}
 			}
 		}
 
@@ -159,7 +172,7 @@ header {
 .ws-canvas-wrapper {
 
 	position: relative;
-	overflow: scroll;
+	overflow: auto;
 
 	.ws-canvas {
 		position: absolute;

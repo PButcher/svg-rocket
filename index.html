@@ -5,6 +5,7 @@
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 		<link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/font-awesome.min.css" />
 		<script type="text/javascript" src="vendor/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="vendor/raphael/raphael-min.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
 	</head>
 	<body>
@@ -31,20 +32,18 @@
 							<a href="#"><i class="fa fa-square-o"></i></a>
 							<a href="#"><i class="fa fa-circle-o"></i></a>
 							<a href="#"><i class="fa fa-star-o"></i></a>
-						</nav>
-						<nav>
 							<a href="#"><i class="fa fa-arrows-alt"></i></a>
 						</nav>
-						<nav>
+						<nav class="toolkit-inputs">
 							<a href="#"><i class="fa fa-arrows-h"></i></a>
-							<input type="text">
+							<input id="canvas-width" type="text">
 							<a href="#"><i class="fa fa-arrows-v"></i></a>
-							<input type="text">
+							<input id="canvas-height" type="text">
 						</nav>
 
 					</div>
 					<div class="ws-canvas-wrapper">
-						<figure class="ws-canvas">
+						<figure id="ws-canvas" class="ws-canvas">
 						</figure>
 					</div>
 				</section>

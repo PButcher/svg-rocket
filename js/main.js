@@ -1,3 +1,6 @@
+var canvasWidth = 550;
+var canvasHeight = 400;
+
 $(document).ready(function() {
 
 	// Set initial element sizes based on current viewport
@@ -6,8 +9,11 @@ $(document).ready(function() {
 	// Set up welcome modal
 	setupWelcomeModal();
 
-	// Set up app windows
-	setupApp();
+	// Set up event listeners
+	setupEventListeners();
+
+	// Set up workspace-canvas
+	setupWorkspaceCanvas();
 });
 
 
@@ -35,8 +41,14 @@ function setupWelcomeModal() {
 	});
 }
 
-// Set up app windows
-function setupApp() {
+// Set up workspace-canvas
+function setupWorkspaceCanvas() {
+	$('#canvas-width').val(550);
+	$('#canvas-height').val(400);
+}
+
+// Set up event listeners
+function setupEventListeners() {
 
 	// Canvas workspace button
 	$('#btn-ws-canvas').click(function() {
@@ -46,6 +58,22 @@ function setupApp() {
 	// Output workspace button
 	$('#btn-ws-output').click(function() {
 		pageTransition("output");
+	});
+
+	// Canvas width
+	$('#canvas-width').change(function() {
+		if(($('#canvas-width').val() > 0) && ($('#canvas-width').val() < 1000)) {
+			canvasWidth = $('#canvas-width').val();
+			$('#ws-canvas').css("width", canvasWidth);
+		}
+	});
+
+	// Canvas height
+	$('#canvas-height').change(function() {
+		if(($('#canvas-height').val() > 0) && ($('#canvas-height').val() < 1000)) {
+			canvasHeight = $('#canvas-height').val();
+			$('#ws-canvas').css("height", canvasHeight);
+		}
 	});
 }
 

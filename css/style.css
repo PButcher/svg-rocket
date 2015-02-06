@@ -106,6 +106,10 @@ header {
       color: #FFF; }
       .ws-canvas-toolkit nav a:hover {
         background-color: #151515; }
+    .ws-canvas-toolkit nav.toolkit-inputs a {
+      pointer-events: none; }
+      .ws-canvas-toolkit nav.toolkit-inputs a:hover {
+        background-color: #202020; }
     .ws-canvas-toolkit nav input {
       width: 40px;
       margin: 0;
@@ -117,7 +121,7 @@ header {
 
 .ws-canvas-wrapper {
   position: relative;
-  overflow: scroll; }
+  overflow: auto; }
   .ws-canvas-wrapper .ws-canvas {
     position: absolute;
     top: 0;
