@@ -1,7 +1,13 @@
 var canvasWidth = 550;
 var canvasHeight = 400;
+var showSplash = false;
 
 $(document).ready(function() {
+
+	// Remove welcome modal whilst testing
+	if(!showSplash) {
+		$('#welcome-modal').remove();
+	}
 
 	// Set initial element sizes based on current viewport
 	resize();
@@ -43,8 +49,24 @@ function setupWelcomeModal() {
 
 // Set up workspace-canvas
 function setupWorkspaceCanvas() {
-	$('#canvas-width').val(550);
-	$('#canvas-height').val(400);
+	var paper = Raphael("ws-canvas", canvasWidth, canvasHeight);
+	paper.add([
+    {
+        type: "circle",
+        cx: 50,
+        cy: 50,
+        r: 50,
+        fill: "#FF0000"
+    },
+    {
+        type: "rect",
+        x: 50,
+        y: 50,
+        width: 50,
+        height: 50,
+        fill: "#fc0"
+    }
+	]);
 }
 
 // Set up event listeners
