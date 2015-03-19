@@ -157,12 +157,13 @@ header {
 		}
 
 		input {
-
+			display: block;
+			float: left;
 			width: 40px;
 			margin: 0;
 			padding: 5px;
 			border: 0;
-			background-color: $color-grey;
+			background-color: $color-vdark-grey;
 			color: $color-white;
 			text-align: center;
 		}
