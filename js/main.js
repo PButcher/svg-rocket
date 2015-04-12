@@ -376,77 +376,138 @@ function importPattern() {
 		console.log(store.roots()[0].children()[i].type);
 		console.log(store.roots()[0].children()[i].id());
 		var nextShape = SVG.get(store.roots()[0].children()[i].id());
-		nextShape.mouseover(function() {
-			if(toolType == 1) {
-				console.log("MOUSEOVER: " + this.id());
-				if(svgSelected != this.id()) {
-					this.attr({
-						stroke: "#F00",
-						"stroke-width": 2
-					});
-				}
-				svgFocus = this.id();
-				$("#ws-canvas").css("cursor", "pointer");
+		
+		svgNodeInteractions(nextShape);
+
+		currentStateSet.add(nextShape);
+	}
+}
+
+function svgNodeInteractions(node) {
+
+	// Mouseover event
+	node.mouseover(function() {
+
+		// Only register a mouseover event when using hand tool
+		if(toolType == 1) {
+			console.log("MOUSEOVER: " + this.id());
+			$("#ws-canvas").css("cursor", "pointer");
+
+			// Do not show a red border if node is selected
+			if(svgSelected != this.id()) {
+				this.attr({
+					stroke: "#F00",
+					"stroke-width": 2
+				});
 			}
-		}).mouseout(function () {
-			if(toolType == 1) {
-				console.log("MOUSEOUT: " + this.id());
-				if(svgSelected != this.id()) {
-					this.attr({
+
+			// Element in focus
+			svgFocus = this.id();
+		}
+
+	// Mouseout event
+	}).mouseout(function () {
+
+		// Only register a mouseout event when using hand tool
+		if(toolType == 1) {
+			console.log("MOUSEOUT: " + this.id());
+			$("#ws-canvas").css("cursor", "auto");
+
+			// Do not remove border if node is selected
+			if(svgSelected != this.id()) {
+				this.attr({
+					stroke: "none",
+					"stroke-width": 0
+				});
+			}
+
+			// Unregister focus and mousedown
+			svgFocus = null;
+			svgMousedown = null;
+		}
+
+	// Mousedown event
+	}).mousedown(function () {
+
+		// Only register a mousedown event when using hand tool
+		if(toolType == 1) {
+			console.log("MOUSEDOWN: " + this.id());
+			$("#ws-canvas").css("cursor", "move");
+
+			// Mouse is down on this element
+			svgMousedown = this.id();
+		}
+
+	// Mouseup event
+	}).mouseup(function() {
+		
+		// Only register a mouseup event when using hand tool
+		if(toolType == 1) {
+			console.log("MOUSEUP: " + this.id());
+			$("#ws-canvas").css("cursor", "pointer");
+
+			// Unregister mousedown
+			svgMousedown = null;
+		}
+
+	// Mousemove event
+	}).mousemove(function() {
+		
+		// Only register a mousemove event when using hand tool
+		if(toolType == 1) {
+
+			// Only register mousemove if mouse is down on thois node
+			if(svgMousedown != null) {
+
+				// Bring node to the front of the sketch
+				this.front();
+
+				// Move node coordinates to cursor position
+				SVG.get(svgMousedown).attr({
+					x: (event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width() - (this.width() / 2)), 
+					y: (event.clientY - $("#ws-canvas").offset().top  - (this.height() / 2))
+				});
+			}
+		}
+
+	// Click event
+	}).click(function() {
+
+		// Only register a click event when using hand tool
+		if(toolType == 1) {
+
+			// If node is not already selected...
+			if(svgSelected != this.id()) {
+
+				// ...and if a another node is currently selected, unselect it
+				if(svgSelected != null) {
+					SVG.get(svgSelected).attr({
 						stroke: "none",
 						"stroke-width": 0
 					});
 				}
-				svgFocus = null;
-				svgMousedown = null;
-				$("#ws-canvas").css("cursor", "auto");
+
+				console.log("CLICK: " + this.id());
+
+				// This is now selected
+				svgSelected = this.id();
+
+				// Add green border
+				this.attr({
+					stroke: "#0F0",
+					"stroke-width": 2
+				});
+
+			// If node is already selected...
+			} else {
+
+				// Unregister node
+				svgSelected = null;
+				this.attr({
+					stroke: "F00",
+					"stroke-width": 2
+				});
 			}
-		}).mousedown(function () {
-			if(toolType == 1) {
-				console.log("MOUSEDOWN: " + this.id());
-				svgMousedown = this.id();
-				$("#ws-canvas").css("cursor", "move");
-			}
-		}).mouseup(function() {
-			if(toolType == 1) {
-				console.log("MOUSEUP: " + this.id());
-				svgMousedown = null;
-				$("#ws-canvas").css("cursor", "pointer");
-			}
-		}).mousemove(function() {
-			if(toolType == 1) {
-				if(svgMousedown != null) {
-					this.front();
-					SVG.get(svgMousedown).attr({
-						x: (event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width() - (this.width() / 2)), 
-						y: (event.clientY - $("#ws-canvas").offset().top  - (this.height() / 2))
-					});
-				}
-			}
-		}).click(function() {
-			if(toolType == 1) {
-				if(svgSelected != this.id()) {
-					if(svgSelected != null) {
-						SVG.get(svgSelected).attr({
-							stroke: "none",
-							"stroke-width": 0
-						});
-					}
-					console.log("CLICK: " + this.id());
-					svgSelected = this.id();
-					this.attr({
-						stroke: "#0F0",
-						"stroke-width": 2
-					});
-				} else {
-					svgSelected = null;
-					this.attr({
-						stroke: "F00",
-						"stroke-width": 2
-					});
-				}
-			}
-		});
-		currentStateSet.add(nextShape);
-	}
+		}
+	});
 }
