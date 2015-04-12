@@ -252,8 +252,7 @@ function rocketInitialise() {
 // Main draw function
 function draw() {
 
-	// Random squares
-	makeRandomSquares();
+	
 }
 
 // Draw a rectangle at a given position
@@ -364,4 +363,90 @@ function makeRandomSquares() {
 		var newRGB = new SVG.Color({r: rN, g: gN, b: bN});
 		this.fill(newRGB);
 	});
+}
+
+var store;
+
+// IMPORT PATTERN
+function importPattern() {
+	var importedPattern = '<svg id="SvgjsSvg1000" xmlns="http://www.w3.org/2000/svg" version="1.1" width="550" height="400" xmlns:xlink="http://www.w3.org/1999/xlink"><rect id="SvgjsRect1006" width="25" height="25" fill="#dc09e9" stroke="none" stroke-width="1" x="325" y="70" radius="0"></rect><rect id="SvgjsRect1007" width="28" height="28" fill="#45725e" stroke="none" stroke-width="1" x="157" y="304" radius="0"></rect><rect id="SvgjsRect1009" width="25" height="25" fill="#934ade" stroke="none" stroke-width="1" x="281" y="27" radius="0"></rect><rect id="SvgjsRect1010" width="25" height="25" fill="#e81d2c" stroke="none" stroke-width="1" x="434" y="144" radius="0"></rect><rect id="SvgjsRect1008" width="57" height="57" fill="#22930b" stroke-width="0" x="213.5" y="176" radius="0"></rect><defs id="SvgjsDefs1001"></defs></svg>';		
+	store = paper.svg(importedPattern);
+	for (var i = 0; i < store.roots()[0].children().length; i++) {
+
+		console.log(store.roots()[0].children()[i].type);
+		console.log(store.roots()[0].children()[i].id());
+		var nextShape = SVG.get(store.roots()[0].children()[i].id());
+		nextShape.mouseover(function() {
+			if(toolType == 1) {
+				console.log("MOUSEOVER: " + this.id());
+				if(svgSelected != this.id()) {
+					this.attr({
+						stroke: "#F00",
+						"stroke-width": 2
+					});
+				}
+				svgFocus = this.id();
+				$("#ws-canvas").css("cursor", "pointer");
+			}
+		}).mouseout(function () {
+			if(toolType == 1) {
+				console.log("MOUSEOUT: " + this.id());
+				if(svgSelected != this.id()) {
+					this.attr({
+						stroke: "none",
+						"stroke-width": 0
+					});
+				}
+				svgFocus = null;
+				svgMousedown = null;
+				$("#ws-canvas").css("cursor", "auto");
+			}
+		}).mousedown(function () {
+			if(toolType == 1) {
+				console.log("MOUSEDOWN: " + this.id());
+				svgMousedown = this.id();
+				$("#ws-canvas").css("cursor", "move");
+			}
+		}).mouseup(function() {
+			if(toolType == 1) {
+				console.log("MOUSEUP: " + this.id());
+				svgMousedown = null;
+				$("#ws-canvas").css("cursor", "pointer");
+			}
+		}).mousemove(function() {
+			if(toolType == 1) {
+				if(svgMousedown != null) {
+					this.front();
+					SVG.get(svgMousedown).attr({
+						x: (event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width() - (this.width() / 2)), 
+						y: (event.clientY - $("#ws-canvas").offset().top  - (this.height() / 2))
+					});
+				}
+			}
+		}).click(function() {
+			if(toolType == 1) {
+				if(svgSelected != this.id()) {
+					if(svgSelected != null) {
+						SVG.get(svgSelected).attr({
+							stroke: "none",
+							"stroke-width": 0
+						});
+					}
+					console.log("CLICK: " + this.id());
+					svgSelected = this.id();
+					this.attr({
+						stroke: "#0F0",
+						"stroke-width": 2
+					});
+				} else {
+					svgSelected = null;
+					this.attr({
+						stroke: "F00",
+						"stroke-width": 2
+					});
+				}
+			}
+		});
+		currentStateSet.add(nextShape);
+	}
 }
