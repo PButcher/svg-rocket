@@ -116,6 +116,8 @@ header {
       color: #FFF; }
       .ws-canvas-toolkit nav a:hover {
         background-color: #151515; }
+      .ws-canvas-toolkit nav a.toolkit-active {
+        color: #99FF00; }
     .ws-canvas-toolkit nav.toolkit-inputs {
       margin-top: 0; }
       .ws-canvas-toolkit nav.toolkit-inputs a {
@@ -137,7 +139,41 @@ header {
   float: right;
   width: 250px;
   height: 100%;
-  background-color: #202020; }
+  background-color: #202020;
+  color: #FFF;
+  overflow: auto; }
+  .ws-canvas-properties section {
+    margin: 65px 15px 15px 15px;
+    display: none; }
+    .ws-canvas-properties section .properties-title {
+      overflow: auto; }
+    .ws-canvas-properties section h1 {
+      display: block;
+      float: left;
+      height: 30px;
+      width: 150px;
+      text-align: left;
+      margin: 0; }
+    .ws-canvas-properties section .properties-icon {
+      display: block;
+      float: right;
+      font-size: 1em; }
+    .ws-canvas-properties section p {
+      color: #999; }
+      .ws-canvas-properties section p i {
+        color: #CCC;
+        width: 15px;
+        padding-right: 10px; }
+      .ws-canvas-properties section p.copyright {
+        color: #666;
+        text-align: center;
+        font-size: 0.8em; }
+        .ws-canvas-properties section p.copyright a {
+          color: #777; }
+    .ws-canvas-properties section hr {
+      background-color: #444;
+      height: 1px;
+      border: 0; }
 
 .ws-canvas-wrapper {
   position: relative;

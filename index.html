@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>ICP-4123 Tech for Internet Systems</title>
+		<title>SVG Rocket</title>
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 		<link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/font-awesome.min.css" />
 		<script type="text/javascript" src="vendor/jquery/dist/jquery.min.js"></script>
@@ -28,12 +28,11 @@
 				<section id="workspace-canvas" class="workspace-canvas workspace-active">
 					<div class="ws-canvas-toolkit">
 						<nav>
-							<a href="#"><i class="fa fa-hand-o-up"></i></a>
-							<a href="#"><i class="fa fa-arrows-alt"></i></a>
-							<a href="#"><i class="fa fa-pencil"></i></a>
-							<a href="#"><i class="fa fa-square-o"></i></a>
-							<a href="#"><i class="fa fa-circle-o"></i></a>
-							<a href="#"><i class="fa fa-star-o"></i></a>
+							<a id="toolkit-hand" href="#"><i class="fa fa-hand-o-up"></i></a>
+							<a id="toolkit-square" href="#"><i class="fa fa-square-o"></i></a>
+							<a id="toolkit-circle" href="#"><i class="fa fa-circle-o"></i></a>
+							<a id="toolkit-star" href="#"><i class="fa fa-star-o"></i></a>
+							<a id="toolkit-help" href="#"><i class="fa fa-question"></i></a>
 						</nav>
 						<nav class="toolkit-inputs">
 							<input id="canvas-width" type="text">
@@ -46,9 +45,59 @@
 						</figure>
 					</div>
 					<div class="ws-canvas-properties">
-						<nav>
-
-						</nav>
+						<section id="properties-help">
+							<div class="properties-title">
+								<i class="properties-icon fa fa-question"></i>
+								<h1>Help</h1>
+							</div>
+							<div class="properties-pane">
+								<p>To begin creating patterns with SVG Rocket, choose an option from the toolkit on the left of the screen.</p>
+								<p>Here's what each of the tools are used for:</p>
+								<p>
+									<i class="fa fa-hand-o-up"></i> Move a shape<br />
+									<i class="fa fa-square-o"></i> Generate squares<br />
+									<i class="fa fa-circle-o"></i> Generate circles<br />
+									<i class="fa fa-star-o"></i> Generate polygons<br />
+									<i class="fa fa-question"></i> Display this help<br />
+								</p>
+								<p>Other functionality:</p>
+								<p>
+									<i class="fa fa-paint-brush"></i> Pattern editor<br />
+									<i class="fa fa-image"></i> Preview SVG<br />
+									<i class="fa fa-download"></i> Download SVG
+								</p>
+								<hr>
+								<p class="copyright">
+									Created for ICP-4123 Tech for Internet Systems at Bangor University, North Wales<br /><br />
+									Fork this project on <a href="https://github.com/PButcher/svg-rocket">GitHub</a><br /><br />
+									&copy; Peter Butcher 2015
+								</p>
+							</div>
+						</section>
+						<section id="properties-hand">
+							<div class="properties-title">
+								<i class="properties-icon fa fa-hand-o-up"></i>
+								<h1>Hand Tool</h1>
+							</div>
+						</section>
+						<section id="properties-square">
+							<div class="properties-title">
+								<i class="properties-icon fa fa-square-o"></i>
+								<h1>Square Tool</h1>
+							</div>
+						</section>
+						<section id="properties-circle">
+							<div class="properties-title">
+								<i class="properties-icon fa fa-circle-o"></i>
+								<h1>Circle Tool</h1>
+							</div>
+						</section>
+						<section id="properties-star">
+							<div class="properties-title">
+								<i class="properties-icon fa fa-star-o"></i>
+								<h1>Polygon Tool</h1>
+							</div>
+						</section>
 					</div>
 				</section>
 				<section id="workspace-output" class="workspace-output">

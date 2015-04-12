@@ -3,9 +3,12 @@ var canvasHeight = 400;
 var testing = true;
 var svgFocus = null;
 var svgMousedown = null;
+var svgSelected = null;
 
 // Drawing state object
 var paper;
+
+// Drawing palette properties
 var palette = {
 	fillColour: "none",
 	opacity: "0.1",
@@ -13,7 +16,17 @@ var palette = {
 	strokeWidth: 1,
 	radius: 0,
 };
+
+// Holds the set of SVG elements in canvas
 var currentStateSet;
+
+// User's chosen tool type
+// 0 - none
+// 1 - hand
+// 2 - square
+// 3 - circle
+// 4 - star
+var toolType = 0;
 
 $(document).ready(function (){
 
@@ -73,7 +86,6 @@ function setupEventListeners() {
 	$('#btn-ws-output').click(function() {
 		pageTransition("output");
 	});
-
 }
 
 // Set up toolkit
@@ -83,12 +95,41 @@ function setupToolkit() {
 	$('#canvas-width').val(canvasWidth);
 	$('#canvas-height').val(canvasHeight);
 
+	toolProperties(0);
+
+	// Nominate help tool as primary
+	$('#toolkit-help').addClass("toolkit-active");
+
+	// Hand tool
+	$('#toolkit-hand').click(function() {
+		if (toolType != 1) setTool(1);
+	});
+
+	// Square tool
+	$('#toolkit-square').click(function() {
+		if(toolType != 2) setTool(2);
+	});
+
+	// Circle tool
+	$('#toolkit-circle').click(function() {
+		if(toolType != 3) setTool(3);
+	});
+
+	// Star tool
+	$('#toolkit-star').click(function() {
+		if(toolType != 4) setTool(4);
+	});
+
+	// Help tool
+	$('#toolkit-help').click(function() {
+		if(toolType != 0) setTool(0);
+	});
+
 	// Canvas width input
 	$('#canvas-width').change(function() {
 		if(($('#canvas-width').val() > 0) && ($('#canvas-width').val() <= 1000)) {
 			canvasWidth = $('#canvas-width').val();
 			$('#ws-canvas').css("width", canvasWidth);
-			draw();
 		}
 	});
 
@@ -97,11 +138,74 @@ function setupToolkit() {
 		if(($('#canvas-height').val() > 0) && ($('#canvas-height').val() <= 1000)) {
 			canvasHeight = $('#canvas-height').val();
 			$('#ws-canvas').css("height", canvasHeight);
-			paper.clear();
-			paper.clear();
-			draw();
 		}
 	});
+}
+
+// Change tool type
+function setTool(t) {
+
+	// Disable all tools
+	$("#toolkit-hand").removeClass("toolkit-active");
+	$("#toolkit-square").removeClass("toolkit-active");
+	$("#toolkit-circle").removeClass("toolkit-active");
+	$("#toolkit-star").removeClass("toolkit-active");
+	$("#toolkit-help").removeClass("toolkit-active");
+
+	switch(t) {
+		case 0:
+			$("#toolkit-help").addClass("toolkit-active");
+			break;
+		case 1:
+			$("#toolkit-hand").addClass("toolkit-active");
+			break;
+		case 2:
+			$("#toolkit-square").addClass("toolkit-active");
+			break;
+		case 3:
+			$("#toolkit-circle").addClass("toolkit-active");
+			break;
+		case 4:
+			$("#toolkit-star").addClass("toolkit-active");
+			break;
+		default:
+			break;
+	}
+
+	// Update tool properties pane
+	toolProperties(t);
+
+	toolType = t;
+}
+
+// Tool properties pane
+// t - tool type
+function toolProperties(t) {
+
+	// Hide all tool properties
+	$('#properties-help').hide();
+	$('#properties-hand').hide();
+	$('#properties-square').hide();
+	$('#properties-circle').hide();
+	$('#properties-star').hide();
+
+	switch(t) {
+		case 0:
+			$('#properties-help').show();
+			break;
+		case 1:
+			$('#properties-hand').show();
+			break;
+		case 2:
+			$('#properties-square').show();
+			break;
+		case 3:
+			$('#properties-circle').show();
+			break;
+		case 4:
+			$('#properties-star').show();
+			break;
+	}
 }
 
 // Page transitions
@@ -166,33 +270,74 @@ function makeRect(width, height, x, y) {
 
 	// Events
 	rect.mouseover(function() {
-		console.log("MOUSEOVER: " + this.id());
-		this.attr({
-			stroke: "#F00",
-			"stroke-width": 2
-		});
-		svgFocus = this.id();
+		if(toolType == 1) {
+			console.log("MOUSEOVER: " + this.id());
+			if(svgSelected != this.id()) {
+				this.attr({
+					stroke: "#F00",
+					"stroke-width": 2
+				});
+			}
+			svgFocus = this.id();
+			$("#ws-canvas").css("cursor", "pointer");
+		}
 	}).mouseout(function () {
-		console.log("MOUSEOUT: " + this.id());
-		this.attr({
-			stroke: "none",
-			"stroke-width": 0
-		});
-		svgFocus = null;
-		svgMousedown = null;
+		if(toolType == 1) {
+			console.log("MOUSEOUT: " + this.id());
+			if(svgSelected != this.id()) {
+				this.attr({
+					stroke: "none",
+					"stroke-width": 0
+				});
+			}
+			svgFocus = null;
+			svgMousedown = null;
+			$("#ws-canvas").css("cursor", "auto");
+		}
 	}).mousedown(function () {
-		console.log("MOUSEDOWN: " + this.id());
-		svgMousedown = this.id();
+		if(toolType == 1) {
+			console.log("MOUSEDOWN: " + this.id());
+			svgMousedown = this.id();
+			$("#ws-canvas").css("cursor", "move");
+		}
 	}).mouseup(function() {
-		console.log("MOUSEUP: " + this.id());
-		svgMousedown = null;
+		if(toolType == 1) {
+			console.log("MOUSEUP: " + this.id());
+			svgMousedown = null;
+			$("#ws-canvas").css("cursor", "pointer");
+		}
 	}).mousemove(function() {
-		if(svgMousedown != null) {
-			this.front();
-			SVG.get(svgMousedown).attr({
-				x: (event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width() - (this.width() / 2)), 
-				y: (event.clientY - $("#ws-canvas").offset().top  - (this.height() / 2))
-			});
+		if(toolType == 1) {
+			if(svgMousedown != null) {
+				this.front();
+				SVG.get(svgMousedown).attr({
+					x: (event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width() - (this.width() / 2)), 
+					y: (event.clientY - $("#ws-canvas").offset().top  - (this.height() / 2))
+				});
+			}
+		}
+	}).click(function() {
+		if(toolType == 1) {
+			if(svgSelected != this.id()) {
+				if(svgSelected != null) {
+					SVG.get(svgSelected).attr({
+						stroke: "none",
+						"stroke-width": 0
+					});
+				}
+				console.log("CLICK: " + this.id());
+				svgSelected = this.id();
+				this.attr({
+					stroke: "#0F0",
+					"stroke-width": 2
+				});
+			} else {
+				svgSelected = null;
+				this.attr({
+					stroke: "F00",
+					"stroke-width": 2
+				});
+			}
 		}
 	});
 

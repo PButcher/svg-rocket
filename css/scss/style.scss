@@ -152,6 +152,9 @@ header {
 			&:hover {
 				background-color: $color-vdark-grey;
 			}
+			&.toolkit-active {
+				color: $color-logo;
+			}
 		}
 
 		&.toolkit-inputs {
@@ -187,6 +190,54 @@ header {
 	width: 250px;
 	height: 100%;
 	background-color: $color-dark-grey;	
+	color: #FFF;
+	overflow: auto;
+
+	section {
+		margin: 65px 15px 15px 15px;
+		display: none;
+		
+		.properties-title {
+			overflow: auto;
+		}
+
+		h1 {
+			display: block;
+			float: left;
+			height: 30px;
+			width: 150px;
+			text-align: left;
+			margin: 0;
+		}
+		.properties-icon {
+			display: block;
+			float: right;
+			font-size: 1em;
+		}
+		p {
+			color: #999;
+
+			i {
+				color: #CCC;
+				width: 15px;
+				padding-right: 10px;
+			}
+			&.copyright {
+				color: #666;
+				text-align: center;
+				font-size: 0.8em;
+
+				a{
+					color: #777;
+				}
+			}
+		}
+		hr {
+			background-color: #444;
+			height: 1px;
+			border: 0;
+		}
+	}
 }
 
 .ws-canvas-wrapper {
