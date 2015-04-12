@@ -6,6 +6,8 @@
 		<link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/font-awesome.min.css" />
 		<script type="text/javascript" src="vendor/jquery/dist/jquery.min.js"></script>
 		<script type="text/javascript" src="js/svg.min.js"></script>
+		<script type="text/javascript" src="js/svg.parser.min.js"></script>
+		<script type="text/javascript" src="js/svg.import.min.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
 	</head>
 	<body>
@@ -23,6 +25,10 @@
 						<a class="logo" href="#"><i class="fa fa-rocket"></i><p>SVG Rocket</p></a>
 						<a id="btn-ws-canvas" class="active" href="#"><i class="fa fa-paint-brush"></i></a>
 						<a id="btn-ws-output" href="#"><i class="fa fa-image"></i></a>
+					</nav>
+					<nav style="float: right">
+						<a id="btn-ws-download" href="#"><i class="fa fa-download"></i></a>
+						<a id="btn-ws-new" href="#"><i class="fa fa-plus"></i></a>
 					</nav>
 				</header>
 				<section id="workspace-canvas" class="workspace-canvas workspace-active">
@@ -54,7 +60,7 @@
 								<p>To begin creating patterns with SVG Rocket, choose an option from the toolkit on the left of the screen.</p>
 								<p>Here's what each of the tools are used for:</p>
 								<p>
-									<i class="fa fa-hand-o-up"></i> Move a shape<br />
+									<i class="fa fa-hand-o-up"></i> Move or edit a shape<br />
 									<i class="fa fa-square-o"></i> Generate squares<br />
 									<i class="fa fa-circle-o"></i> Generate circles<br />
 									<i class="fa fa-star-o"></i> Generate polygons<br />
@@ -79,23 +85,35 @@
 								<i class="properties-icon fa fa-hand-o-up"></i>
 								<h1>Hand Tool</h1>
 							</div>
+							<div class="properties-pane">
+								<p>Move or edit a shape</p>
+							</div>
 						</section>
 						<section id="properties-square">
 							<div class="properties-title">
 								<i class="properties-icon fa fa-square-o"></i>
 								<h1>Square Tool</h1>
 							</div>
+							<div class="properties-pane">
+								<p>Generate squares</p>
+							</div>
 						</section>
 						<section id="properties-circle">
 							<div class="properties-title">
 								<i class="properties-icon fa fa-circle-o"></i>
-								<h1>Circle Tool</h1>
+								<h1>Circle tool</h1>
+							</div>
+							<div class="properties-pane">
+								<p>Generate circles</p>
 							</div>
 						</section>
 						<section id="properties-star">
 							<div class="properties-title">
 								<i class="properties-icon fa fa-star-o"></i>
 								<h1>Polygon Tool</h1>
+							</div>
+							<div class="properties-pane">
+								<p>Generate polygons</p>
 							</div>
 						</section>
 					</div>
