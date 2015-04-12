@@ -1,16 +1,26 @@
 var canvasWidth = 550;
 var canvasHeight = 400;
-var showSplash = false;
+var testing = true;
+var svgFocus = null;
+var svgMousedown = null;
+
+// Drawing state object
+var paper;
+var palette = {
+	fillColour: "none",
+	opacity: "0.1",
+	strokeColour: "none",
+	strokeWidth: 1,
+	radius: 0,
+};
+var currentStateSet;
 
 $(document).ready(function (){
 
 	// Remove welcome modal whilst testing
-	if(!showSplash) {
+	if(testing) {
 		$('#welcome-modal').remove();
 	}
-
-	// Set initial element sizes based on current viewport
-	resize();
 
 	// Set up welcome modal
 	setupWelcomeModal();
@@ -18,11 +28,14 @@ $(document).ready(function (){
 	// Set up event listeners
 	setupEventListeners();
 
-	// Set up workspace-canvas
-	setupWorkspaceCanvas();
+	// Lift off!
+	rocketInitialise();
 
 	// Set up toolkit
 	setupToolkit();
+
+	// Set initial element sizes based on current viewport
+	resize();
 });
 
 
@@ -36,9 +49,7 @@ $(window).resize(function() {
 // Set initial element sizes based on current viewport
 function resize() {
 
-	$('#welcome-modal').css("height", $(window).height());
-	$('.workspace-canvas, .workspace-output').css("height", ($(window).innerHeight() - $('header').height()));
-	$('.ws-canvas-toolkit, .ws-canvas-wrapper').css("height", ($(window).innerHeight() - $('header').height()));
+	$("#ws-canvas-wrapper").css("width", ($(window).innerWidth() - $(".ws-canvas-toolkit").width() - $(".ws-canvas-properties").width()));
 }
 
 // Set up welcome modal
@@ -48,85 +59,6 @@ function setupWelcomeModal() {
 	$('#btn-begin').click(function() {	
 		$('#welcome-modal').fadeOut(500);
 	});
-}
-
-// Set up workspace-canvas
-function setupWorkspaceCanvas() {
-	var paper = Raphael("ws-canvas", canvasWidth, canvasHeight);
-	var exampleSketch, exampleSketch2 = [
-	{
-		type: "circle",
-		cx: 50,
-		cy: 50,
-		r: 50,
-		fill: "#FF0000",
-		"stroke-width": 0,
-		stroke: "#000"
-	},
-	{
-		type: "rect",
-		x: 50,
-		y: 50,
-		width: 50,
-		height: 50,
-		fill: "#FF0000",
-		"stroke-width": 0,
-		stroke: "#000"
-	},
-	{
-		type: "rect",
-		x: 50,
-		y: 50,
-		width: 25,
-		height: 25,
-		fill: "#FFF",
-		"stroke-width": 0
-	},
-	{
-		type: "circle",
-		cx: 50,
-		cy: 50,
-		r: 25,
-		fill: "#FFF",
-		"stroke-width": 0
-	}
-	// {
-	// 	type: "text",
-	// 	x: 150,
-	// 	y: 100,
-	// 	text: "Some Text",
-	// 	fill: "#000"
-	// }
-	];
-
-	var r1 = paper.rect(100,100,200,10,5).attr({fill:'white'});
-	var r2 = paper.rect(50,200,100,15,5).attr({fill:'white'});
-	var r3 = paper.rect(200,100,200,10,5).attr({fill:'white'});
-	var r4 = paper.rect(150,200,100,15,5).attr({fill:'white'});
-
-	var shape = paper.set(r1, r2);
-	var shape2 = paper.set(r3, r4);
-
-	var l_coords = shape.getBBox().x,
-		r_coords = shape.getBBox().x2,
-		t_coords = shape.getBBox().y,
-		b_coords = shape.getBBox().y2;
-
-	var l2_coords = shape2.getBBox().x,
-		r2_coords = shape2.getBBox().x2,
-		t2_coords = shape2.getBBox().y,
-		b2_coords = shape2.getBBox().y2;
-
-	var cx = (l_coords + r_coords) / 2,
-		cy = (t_coords + b_coords) / 2;
-
-	var cx2 = (l_coords + r_coords) / 2,
-		cy2 = (t_coords + b_coords) / 2;
-
-	shape.rotate(45, cx, cy);
-	shape2.rotate(45, cx2, cy2);
-
-
 }
 
 // Set up event listeners
@@ -156,6 +88,7 @@ function setupToolkit() {
 		if(($('#canvas-width').val() > 0) && ($('#canvas-width').val() <= 1000)) {
 			canvasWidth = $('#canvas-width').val();
 			$('#ws-canvas').css("width", canvasWidth);
+			draw();
 		}
 	});
 
@@ -164,6 +97,9 @@ function setupToolkit() {
 		if(($('#canvas-height').val() > 0) && ($('#canvas-height').val() <= 1000)) {
 			canvasHeight = $('#canvas-height').val();
 			$('#ws-canvas').css("height", canvasHeight);
+			paper.clear();
+			paper.clear();
+			draw();
 		}
 	});
 }
@@ -194,4 +130,93 @@ function pageTransition(dest) {
 		default:
 			break;
 	}
+}
+
+// Initialise SVG JS
+function rocketInitialise() {
+
+	// SVGJS draw object
+	paper = SVG("ws-canvas").size(canvasWidth, canvasHeight);
+
+	// Holds SVG set that's being used at the moment
+	currentStateSet = paper.set();
+
+	// Draw stuff!
+	draw();
+}
+
+// Main draw function
+function draw() {
+
+	// Random squares
+	makeRandomSquares();
+}
+
+// Draw a rectangle at a given position
+function makeRect(width, height, x, y) {
+
+	var rect = paper.rect(width, height).attr({
+		fill: palette.fillColour,
+		stroke: palette.strokeColour,
+		"stroke-width": palette.strokeWidth,
+		x: x,
+		y: y,
+		radius: palette.radius
+	});
+
+	// Events
+	rect.mouseover(function() {
+		console.log("MOUSEOVER: " + this.id());
+		this.attr({
+			stroke: "#F00",
+			"stroke-width": 2
+		});
+		svgFocus = this.id();
+	}).mouseout(function () {
+		console.log("MOUSEOUT: " + this.id());
+		this.attr({
+			stroke: "none",
+			"stroke-width": 0
+		});
+		svgFocus = null;
+		svgMousedown = null;
+	}).mousedown(function () {
+		console.log("MOUSEDOWN: " + this.id());
+		svgMousedown = this.id();
+	}).mouseup(function() {
+		console.log("MOUSEUP: " + this.id());
+		svgMousedown = null;
+	}).mousemove(function() {
+		if(svgMousedown != null) {
+			this.front();
+			SVG.get(svgMousedown).attr({
+				x: (event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width() - (this.width() / 2)), 
+				y: (event.clientY - $("#ws-canvas").offset().top  - (this.height() / 2))
+			});
+		}
+	});
+
+	// Add rect to set
+	currentStateSet.add(rect);
+}
+
+// PATTERN :: RANDOM SQUARES
+function makeRandomSquares() {
+
+	// Draw a bunch of random squares
+	var size;
+	var nSquares = 5;
+
+	for(var i = 0; i < nSquares; i++) {
+		size = Math.ceil(Math.random()*100);
+		if(size < 25){ size = 25;}
+		makeRect(size, size, Math.floor(Math.random()*(canvasWidth-size)), Math.floor(Math.random()*(canvasHeight-size)));
+	}
+	currentStateSet.each(function() {
+		var rN = Math.round(Math.random()*255);
+		var gN = Math.round(Math.random()*255);
+		var bN = Math.round(Math.random()*255);
+		var newRGB = new SVG.Color({r: rN, g: gN, b: bN});
+		this.fill(newRGB);
+	});
 }
