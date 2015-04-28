@@ -395,15 +395,24 @@ function importPattern() {
 
 // Update and populate hand tool properties pane
 function populateHandToolProperties() {
-	$("#properties-hand-pane").show();
-	$("#pShapeID").html('<i class="fa fa-square-o"></i>' + svgSelected);
-	$("#pShapeX").val(SVG.get(svgSelected).x());
-	$("#pShapeY").val(SVG.get(svgSelected).y());
-	$("#pShapeWidth").val(SVG.get(svgSelected).width());
-	$("#pShapeHeight").val(SVG.get(svgSelected).height());
-	$("#pShapeRadius").val(SVG.get(svgSelected).node.attributes.rx.value);
-	$("#pShapeStrokeWidth").val(SVG.get(svgSelected).node.attributes[5].value);
-	$("#pShapeRotation").val(SVG.get(svgSelected).transform().rotation);
+
+	if(svgSelected != null) {
+
+		switch(SVG.get(svgSelected).type) {
+
+			// Hand tool for quads
+			case "rect":
+				$("#properties-hand-pane").show();
+				$("#pShapeID").html('<i class="fa fa-square-o"></i>' + svgSelected);
+				$("#pShapeX").val(SVG.get(svgSelected).x());
+				$("#pShapeY").val(SVG.get(svgSelected).y());
+				$("#pShapeWidth").val(SVG.get(svgSelected).width());
+				$("#pShapeHeight").val(SVG.get(svgSelected).height());
+				$("#pShapeRadius").val(SVG.get(svgSelected).node.attributes.rx.value);
+				$("#pShapeStrokeWidth").val(SVG.get(svgSelected).node.attributes[5].value);
+				$("#pShapeRotation").val(SVG.get(svgSelected).transform().rotation);
+		}
+	}
 }
 
 // Clear hand tool properties pane
@@ -533,10 +542,8 @@ function svgNodeInteractions(node) {
 				svgSelected = this.id();
 
 				// Update properties pane
-				switch(SVG.get(svgSelected).type) {
-					case "rect":
-						populateHandToolProperties();
-				}
+				populateHandToolProperties();
+
 				// Add green border
 				this.attr({
 					stroke: "#0F0",
