@@ -160,6 +160,50 @@ function setupToolkit() {
 // Setup properties
 function setupProperties() {
 
+	// Shape x coordinate
+	$("#pShapeX").change(function() {
+		SVG.get(svgSelected).attr({x:this.value});
+	});
+
+	// Shape y coordinate
+	$("#pShapeY").change(function() {
+		SVG.get(svgSelected).attr({y:this.value});
+	});
+
+	// Shape width
+	$("#pShapeWidth").change(function() {
+		SVG.get(svgSelected).attr({width:this.value});
+	});
+
+	// Shape height
+	$("#pShapeHeight").change(function() {
+		SVG.get(svgSelected).attr({height:this.value});
+	});
+
+	// Shape radius
+	$("#pShapeRadius").change(function() {
+		SVG.get(svgSelected).radius(this.value);
+	});
+
+	// Shape stroke width
+	$("#pShapeStrokeWidth").change(function() {
+		SVG.get(svgSelected).attr({"stroke-width":this.value});
+	});
+
+	// Shape rotation
+	$("#pShapeRotation").change(function() {
+		SVG.get(svgSelected).transform({rotation:this.value});
+	});
+
+	// $("#properties-hand-pane").show();
+	// $("#pShapeID").html('<i class="fa fa-square-o"></i>' + svgSelected);
+	// $("#pShapeX").val(SVG.get(svgSelected).x());
+	// $("#pShapeY").val(SVG.get(svgSelected).y());
+	// $("#pShapeWidth").val(SVG.get(svgSelected).width());
+	// $("#pShapeHeight").val(SVG.get(svgSelected).height());
+	// $("#pShapeRadius").val(SVG.get(svgSelected).node.attributes.rx.value);
+	// $("#pShapeStrokeWidth").val(SVG.get(svgSelected).node.attributes[5].value);
+	// $("#pShapeRotation").val(SVG.get(svgSelected).transform().rotation);
 }
 
 // Change tool type
