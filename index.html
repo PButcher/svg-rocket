@@ -26,7 +26,7 @@
 						<a id="btn-ws-canvas" class="active" href="#"><i class="fa fa-paint-brush"></i></a>
 						<a id="btn-ws-output" href="#"><i class="fa fa-image"></i></a>
 					</nav>
-					<nav style="float: right">
+					<nav class="nav-right">
 						<a id="btn-ws-download" href="#"><i class="fa fa-download"></i></a>
 						<a id="btn-ws-new" href="#"><i class="fa fa-plus"></i></a>
 					</nav>
@@ -61,7 +61,7 @@
 								<p>Here's what each of the tools are used for:</p>
 								<p>
 									<i class="fa fa-hand-o-up"></i> Move or edit a shape<br />
-									<i class="fa fa-square-o"></i> Generate squares<br />
+									<i class="fa fa-square-o"></i> Generate quads<br />
 									<i class="fa fa-circle-o"></i> Generate circles<br />
 									<i class="fa fa-star-o"></i> Generate polygons<br />
 									<i class="fa fa-question"></i> Display this help<br />
@@ -70,7 +70,8 @@
 								<p>
 									<i class="fa fa-paint-brush"></i> Pattern editor<br />
 									<i class="fa fa-image"></i> Preview SVG<br />
-									<i class="fa fa-download"></i> Download SVG
+									<i class="fa fa-download"></i> Download SVG<br />
+									<i class="fa fa-plus"></i> Create new SVG
 								</p>
 								<hr>
 								<p class="copyright">
@@ -87,15 +88,60 @@
 							</div>
 							<div class="properties-pane">
 								<p>Move or edit a shape</p>
+								<hr />
+								<div class="properties-hand-pane" id="properties-hand-pane">
+									<p class="pShapeID" id="pShapeID"></p>
+									<div class="pGroup">
+										<p class="pGroupTitle">Position &amp; Size</p>
+										<div class="pItem pItemLeft">
+											<label>X</label>
+											<input id="pShapeX" type="text" />
+										</div>
+										<div class="pItem pItemRight">
+											<label>Y</label>
+											<input id="pShapeY" type="text" />
+										</div>
+										<div class="pItem pItemLeft">
+											<label>W</label>
+											<input id="pShapeWidth" type="text" />
+										</div>
+										<div class="pItem pItemRight">
+											<label>H</label>
+											<input id="pShapeHeight" type="text" />
+										</div>
+									</div>
+									<div class="pGroup">
+										<p class="pGroupTitle">Style &amp; Stroke</p>
+										<div class="pItem pItemLeft">
+											<label>Radius</label>
+											<input id="pShapeRadius" type="text" />
+										</div>
+										<div class="pItem pItemLeft">
+											<label>Stroke</label>
+											<input id="pShapeStrokeWidth" type="text" />
+										</div>
+										<div class="pItem pItemLeft">
+											<label>Rotation</label>
+											<input id="pShapeRotation" type="text" />
+										</div>
+									</div>
+									<div class="pGroup">
+										<p class="pGroupTitle">Actions</p>
+										<a id="button-copy" class="button button-blue button-copy" href="#"><i class="fa fa-paste"></i> <p>Copy</p></a>
+										<a id="button-delete" class="button button-red button-delete "href="#"><i class="fa fa-trash-o"></i> <p>Delete</p></a>
+									</div>
+								</div>
 							</div>
 						</section>
 						<section id="properties-square">
 							<div class="properties-title">
 								<i class="properties-icon fa fa-square-o"></i>
-								<h1>Square Tool</h1>
+								<h1>Quad Tool</h1>
 							</div>
 							<div class="properties-pane">
 								<p>Generate squares</p>
+								<hr />
+								<a href="#">Add</a>
 							</div>
 						</section>
 						<section id="properties-circle">
@@ -105,6 +151,7 @@
 							</div>
 							<div class="properties-pane">
 								<p>Generate circles</p>
+								<hr />
 							</div>
 						</section>
 						<section id="properties-star">
@@ -114,6 +161,7 @@
 							</div>
 							<div class="properties-pane">
 								<p>Generate polygons</p>
+								<hr />
 							</div>
 						</section>
 					</div>

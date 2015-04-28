@@ -3,8 +3,13 @@ $color-workspace: #333;
 $color-grey: #666;
 $color-dark-grey: #202020;
 $color-white: #FFF;
-$color-logo: #99FF00;
+$color-green: #99FF00;
 $color-vdark-grey: #151515;
+$color-blue: #0060A1;
+$color-light-blue: #006CB5;
+$color-red: #B0281A;
+$color-light-red: #D14836;
+
 html, body {
 	height: 100%;
 }
@@ -22,20 +27,24 @@ header {
 	position: fixed;
 	z-index: 5;
 
+	.nav-right {
+		float: right;
+	}
+
 	a {
 		text-align: center;
 		display: block;
 		float: left;
 		width: 50px;
 		height: 50px;
-		color: $color-grey;
+		color: $color-white;
 		text-decoration: none;
 
 		&:hover {
 			background-color: $color-dark-grey;
 		}
 		&.logo {
-			color: $color-logo;
+			color: $color-green;
 			width: auto;
 			padding: 0px 25px 0px 20px;
 			p {
@@ -51,10 +60,10 @@ header {
 		}
 		&.active {
 			background-color: $color-workspace;
-			color: $color-grey;
+			color: $color-green;
 
 			&:hover {
-				color: $color-grey;
+				color: $color-green;
 			}
 		}
 	}
@@ -95,7 +104,7 @@ header {
 		margin: 0px;
 		text-align: center;
 		font-weight: normal;
-		color: $color-logo;
+		color: $color-green;
 		font-size: 25pt;
 	}
 	a {
@@ -153,7 +162,7 @@ header {
 				background-color: $color-vdark-grey;
 			}
 			&.toolkit-active {
-				color: $color-logo;
+				color: $color-green;
 			}
 		}
 
@@ -181,6 +190,7 @@ header {
 			background-color: $color-vdark-grey;
 			color: $color-white;
 			text-align: center;
+			outline: none;
 		}
 	}
 }
@@ -237,6 +247,83 @@ header {
 			height: 1px;
 			border: 0;
 		}
+		.properties-hand-pane {
+			display: none;
+		}
+		.pGroup {
+			overflow: auto;
+			clear: both;
+		}
+		.pGroupTitle {
+			font-weight: bold;
+		}
+		.pShapeID {
+			font-weight: bold;
+			color: $color-green;
+			i {
+				color: $color-green;
+			}
+		}
+		.pItem {
+			float: left;
+			margin: 0px 15px 10px 0px;
+		}
+		.pItemLeft {
+			float: left;
+		}
+		.pItemRight {
+			float: right;
+		}
+		label {
+			color: #999;
+		}
+		input {
+			display: inline-block;
+			// float: left;
+			width: 40px;
+			margin: 0;
+			padding: 5px;
+			border: 0;
+			background-color: $color-vdark-grey;
+			color: $color-white;
+			text-align: center;
+			outline: none;
+		}
+	}
+}
+
+a.button {
+	color: #FFF;
+	text-decoration: none;
+	padding: 15px;
+
+	i {
+		display: inline-block;
+		margin-right: 10px;
+		color: #FFF;
+	}
+	p {
+		display: inline-block;
+		color: #FFF;
+		margin: 0;
+	}
+	&.button-red {
+		background-color: $color-red;
+		&:hover {
+			background-color: $color-light-red;
+		}
+	}
+	&.button-blue {
+		background-color: $color-blue;
+		&:hover {
+			background-color: $color-light-blue;
+		}	
+	}
+	&.button-copy {
+		float: left;
+	}
+	&.button-delete {
+		float: right;
 	}
 }
 

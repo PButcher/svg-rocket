@@ -1,6 +1,9 @@
 var canvasWidth = 550;
 var canvasHeight = 400;
 var testing = true;
+var quadID = 0;
+var circleID = 0;
+var polygonID = 0;
 var svgFocus = null;
 var svgMousedown = null;
 var svgSelected = null;
@@ -10,11 +13,14 @@ var paper;
 
 // Drawing palette properties
 var palette = {
-	fillColour: "none",
-	opacity: "0.1",
-	strokeColour: "none",
+	fillColour: "#FFF",
+	fillOpacity: "0",
+	opacity: 1,
+	stroke: '#000',
+	strokeColour: "#000",
 	strokeWidth: 1,
-	radius: 0,
+	radius: 10,
+	rotation: 0,
 };
 
 // Holds the set of SVG elements in canvas
@@ -28,6 +34,9 @@ var currentStateSet;
 // 4 - star
 var toolType = 0;
 
+// Layers
+var layers = {};
+
 $(document).ready(function (){
 
 	// Remove welcome modal whilst testing
@@ -39,13 +48,19 @@ $(document).ready(function (){
 	setupWelcomeModal();
 
 	// Set up event listeners
-	setupEventListeners();
+	setupViewListeners();
 
 	// Lift off!
 	rocketInitialise();
 
+	// Set up canvas plotting
+	setupCanvasPlotting();
+
 	// Set up toolkit
 	setupToolkit();
+
+	// Set up properties
+	setupProperties();
 
 	// Set initial element sizes based on current viewport
 	resize();
@@ -75,7 +90,7 @@ function setupWelcomeModal() {
 }
 
 // Set up event listeners
-function setupEventListeners() {
+function setupViewListeners() {
 
 	// Canvas workspace button
 	$('#btn-ws-canvas').click(function() {
@@ -140,6 +155,11 @@ function setupToolkit() {
 			$('#ws-canvas').css("height", canvasHeight);
 		}
 	});
+}
+
+// Setup properties
+function setupProperties() {
+
 }
 
 // Change tool type
@@ -249,107 +269,68 @@ function rocketInitialise() {
 	draw();
 }
 
+// Set up canvas plotting
+function setupCanvasPlotting() {
+
+	// Call main plotting function with cursor coordinates
+	$('#ws-canvas').click(function() {
+		console.log("CLICK: canvas");
+		var cXPos = event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width();
+		var cYPos = event.clientY - $("#ws-canvas").offset().top;
+
+		canvasPlotting(cXPos, cYPos);
+	});
+}
+
+// Canvas plotting
+function canvasPlotting(cXPos, cYPos) {
+
+	// Decide what to plot
+	switch(toolType) {
+		case 2:
+			console.log("DRAW: rect");
+			console.log(cXPos + " : " + cYPos)
+			makeRect(100, 100, cXPos-50, cYPos-50);
+			break;
+	}
+}
+
 // Main draw function
 function draw() {
 
-	
+	makeRect(100,100,100,100);
+
 }
 
 // Draw a rectangle at a given position
 function makeRect(width, height, x, y) {
 
-	var rect = paper.rect(width, height).attr({
+	quadID = ++quadID;
+
+	var rect = paper.rect(width, height).id("quad-" + quadID).attr({
 		fill: palette.fillColour,
 		stroke: palette.strokeColour,
 		"stroke-width": palette.strokeWidth,
 		x: x,
 		y: y,
-		radius: palette.radius
-	});
+		"fill-opacity": palette.fillOpacity,
+		opacity: palette.opacity
+	}).radius(palette.radius, palette.radius);
 
 	// Events
-	rect.mouseover(function() {
-		if(toolType == 1) {
-			console.log("MOUSEOVER: " + this.id());
-			if(svgSelected != this.id()) {
-				this.attr({
-					stroke: "#F00",
-					"stroke-width": 2
-				});
-			}
-			svgFocus = this.id();
-			$("#ws-canvas").css("cursor", "pointer");
-		}
-	}).mouseout(function () {
-		if(toolType == 1) {
-			console.log("MOUSEOUT: " + this.id());
-			if(svgSelected != this.id()) {
-				this.attr({
-					stroke: "none",
-					"stroke-width": 0
-				});
-			}
-			svgFocus = null;
-			svgMousedown = null;
-			$("#ws-canvas").css("cursor", "auto");
-		}
-	}).mousedown(function () {
-		if(toolType == 1) {
-			console.log("MOUSEDOWN: " + this.id());
-			svgMousedown = this.id();
-			$("#ws-canvas").css("cursor", "move");
-		}
-	}).mouseup(function() {
-		if(toolType == 1) {
-			console.log("MOUSEUP: " + this.id());
-			svgMousedown = null;
-			$("#ws-canvas").css("cursor", "pointer");
-		}
-	}).mousemove(function() {
-		if(toolType == 1) {
-			if(svgMousedown != null) {
-				this.front();
-				SVG.get(svgMousedown).attr({
-					x: (event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width() - (this.width() / 2)), 
-					y: (event.clientY - $("#ws-canvas").offset().top  - (this.height() / 2))
-				});
-			}
-		}
-	}).click(function() {
-		if(toolType == 1) {
-			if(svgSelected != this.id()) {
-				if(svgSelected != null) {
-					SVG.get(svgSelected).attr({
-						stroke: "none",
-						"stroke-width": 0
-					});
-				}
-				console.log("CLICK: " + this.id());
-				svgSelected = this.id();
-				this.attr({
-					stroke: "#0F0",
-					"stroke-width": 2
-				});
-			} else {
-				svgSelected = null;
-				this.attr({
-					stroke: "F00",
-					"stroke-width": 2
-				});
-			}
-		}
-	});
+	svgNodeInteractions(rect);
 
 	// Add rect to set
 	currentStateSet.add(rect);
 }
 
 // PATTERN :: RANDOM SQUARES
-function makeRandomSquares() {
+function makeRandomSquares(n) {
 
 	// Draw a bunch of random squares
 	var size;
 	var nSquares = 5;
+	if(n != undefined) nSquares = n;
 
 	for(var i = 0; i < nSquares; i++) {
 		size = Math.ceil(Math.random()*100);
@@ -365,16 +346,45 @@ function makeRandomSquares() {
 	});
 }
 
+// PATTERN :: POLYGON
+function drawPolygon(x, y, v, r, colour, strokeColour, strokeWidth, rotation) {
+
+	// Point arrays
+	var xPoints = [];
+	var yPoints = [];
+
+	// Polygon points string
+	var polygonString = "";
+
+	// Get polygon vertex coordinates
+	for(var i = 0; i < sides; i++) {
+		polygonXPoints.push((x + ((r * 2) * Math.cos(i * 2 * Math.PI / sides))));
+		polygonYPoints.push((y + ((r * 2) * Math.sin(i * 2 * Math.PI / sides))));
+
+		// Add next coordinates to the polygon string
+		polygonString = polygonString + polygonXPoints[i] + "," + polygonYPoints[i] + " ";
+	}
+
+	// Draw polygon
+	draw.polygon(polygonString).attr({
+		"stroke-width": 1,
+		fill: "#FFF"
+	});
+}
+
 var store;
 
 // IMPORT PATTERN
 function importPattern() {
+
 	var importedPattern = '<svg id="SvgjsSvg1000" xmlns="http://www.w3.org/2000/svg" version="1.1" width="550" height="400" xmlns:xlink="http://www.w3.org/1999/xlink"><rect id="SvgjsRect1006" width="25" height="25" fill="#dc09e9" stroke="none" stroke-width="1" x="325" y="70" radius="0"></rect><rect id="SvgjsRect1007" width="28" height="28" fill="#45725e" stroke="none" stroke-width="1" x="157" y="304" radius="0"></rect><rect id="SvgjsRect1009" width="25" height="25" fill="#934ade" stroke="none" stroke-width="1" x="281" y="27" radius="0"></rect><rect id="SvgjsRect1010" width="25" height="25" fill="#e81d2c" stroke="none" stroke-width="1" x="434" y="144" radius="0"></rect><rect id="SvgjsRect1008" width="57" height="57" fill="#22930b" stroke-width="0" x="213.5" y="176" radius="0"></rect><defs id="SvgjsDefs1001"></defs></svg>';		
+
 	store = paper.svg(importedPattern);
+
 	for (var i = 0; i < store.roots()[0].children().length; i++) {
 
-		console.log(store.roots()[0].children()[i].type);
-		console.log(store.roots()[0].children()[i].id());
+		// console.log(store.roots()[0].children()[i].type);
+		// console.log(store.roots()[0].children()[i].id());
 		var nextShape = SVG.get(store.roots()[0].children()[i].id());
 		
 		svgNodeInteractions(nextShape);
@@ -383,6 +393,33 @@ function importPattern() {
 	}
 }
 
+// Update and populate hand tool properties pane
+function populateHandToolProperties() {
+	$("#properties-hand-pane").show();
+	$("#pShapeID").html('<i class="fa fa-square-o"></i>' + svgSelected);
+	$("#pShapeX").val(SVG.get(svgSelected).x());
+	$("#pShapeY").val(SVG.get(svgSelected).y());
+	$("#pShapeWidth").val(SVG.get(svgSelected).width());
+	$("#pShapeHeight").val(SVG.get(svgSelected).height());
+	$("#pShapeRadius").val(SVG.get(svgSelected).node.attributes.rx.value);
+	$("#pShapeStrokeWidth").val(SVG.get(svgSelected).node.attributes[5].value);
+	$("#pShapeRotation").val(SVG.get(svgSelected).transform().rotation);
+}
+
+// Clear hand tool properties pane
+function clearHandToolProperties() {
+	$("#properties-hand-pane").hide();
+	$("#pShapeID").html("");
+	$("#pShapeX").html("");
+	$("#pShapeY").html("");
+	$("#pShapeWidth").val("");
+	$("#pShapeHeight").val("");
+	$("#pShapeRadius").val("");
+	$("#pShapeStrokeWidth").val("");
+	$("#pShapeRotation").val("");
+}
+
+// Mouse interactions with nodes
 function svgNodeInteractions(node) {
 
 	// Mouseover event
@@ -416,8 +453,8 @@ function svgNodeInteractions(node) {
 			// Do not remove border if node is selected
 			if(svgSelected != this.id()) {
 				this.attr({
-					stroke: "none",
-					"stroke-width": 0
+					stroke: palette.strokeColour,
+					"stroke-width": palette.strokeWidth
 				});
 			}
 
@@ -467,6 +504,9 @@ function svgNodeInteractions(node) {
 					x: (event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width() - (this.width() / 2)), 
 					y: (event.clientY - $("#ws-canvas").offset().top  - (this.height() / 2))
 				});
+
+				// Update properties pane
+				populateHandToolProperties();
 			}
 		}
 
@@ -482,8 +522,8 @@ function svgNodeInteractions(node) {
 				// ...and if a another node is currently selected, unselect it
 				if(svgSelected != null) {
 					SVG.get(svgSelected).attr({
-						stroke: "none",
-						"stroke-width": 0
+						stroke: palette.strokeColour,
+						"stroke-width": palette.strokeWidth
 					});
 				}
 
@@ -492,6 +532,11 @@ function svgNodeInteractions(node) {
 				// This is now selected
 				svgSelected = this.id();
 
+				// Update properties pane
+				switch(SVG.get(svgSelected).type) {
+					case "rect":
+						populateHandToolProperties();
+				}
 				// Add green border
 				this.attr({
 					stroke: "#0F0",
@@ -504,9 +549,12 @@ function svgNodeInteractions(node) {
 				// Unregister node
 				svgSelected = null;
 				this.attr({
-					stroke: "F00",
+					stroke: "#F00",
 					"stroke-width": 2
 				});
+
+				// Clear properties pane
+				clearHandToolProperties();
 			}
 		}
 	});

@@ -14,13 +14,15 @@ header {
   background-color: #151515;
   position: fixed;
   z-index: 5; }
+  header .nav-right {
+    float: right; }
   header a {
     text-align: center;
     display: block;
     float: left;
     width: 50px;
     height: 50px;
-    color: #666;
+    color: #FFF;
     text-decoration: none; }
     header a:hover {
       background-color: #202020; }
@@ -38,9 +40,9 @@ header {
         background-color: #151515; }
     header a.active {
       background-color: #333;
-      color: #666; }
+      color: #99FF00; }
       header a.active:hover {
-        color: #666; }
+        color: #99FF00; }
 
 .wrapper, .app {
   height: 100%; }
@@ -133,7 +135,8 @@ header {
       border: 0;
       background-color: #151515;
       color: #FFF;
-      text-align: center; }
+      text-align: center;
+      outline: none; }
 
 .ws-canvas-properties {
   float: right;
@@ -174,6 +177,62 @@ header {
       background-color: #444;
       height: 1px;
       border: 0; }
+    .ws-canvas-properties section .properties-hand-pane {
+      display: none; }
+    .ws-canvas-properties section .pGroup {
+      overflow: auto;
+      clear: both; }
+    .ws-canvas-properties section .pGroupTitle {
+      font-weight: bold; }
+    .ws-canvas-properties section .pShapeID {
+      font-weight: bold;
+      color: #99FF00; }
+      .ws-canvas-properties section .pShapeID i {
+        color: #99FF00; }
+    .ws-canvas-properties section .pItem {
+      float: left;
+      margin: 0px 15px 10px 0px; }
+    .ws-canvas-properties section .pItemLeft {
+      float: left; }
+    .ws-canvas-properties section .pItemRight {
+      float: right; }
+    .ws-canvas-properties section label {
+      color: #999; }
+    .ws-canvas-properties section input {
+      display: inline-block;
+      width: 40px;
+      margin: 0;
+      padding: 5px;
+      border: 0;
+      background-color: #151515;
+      color: #FFF;
+      text-align: center;
+      outline: none; }
+
+a.button {
+  color: #FFF;
+  text-decoration: none;
+  padding: 15px; }
+  a.button i {
+    display: inline-block;
+    margin-right: 10px;
+    color: #FFF; }
+  a.button p {
+    display: inline-block;
+    color: #FFF;
+    margin: 0; }
+  a.button.button-red {
+    background-color: #B0281A; }
+    a.button.button-red:hover {
+      background-color: #D14836; }
+  a.button.button-blue {
+    background-color: #0060A1; }
+    a.button.button-blue:hover {
+      background-color: #006CB5; }
+  a.button.button-copy {
+    float: left; }
+  a.button.button-delete {
+    float: right; }
 
 .ws-canvas-wrapper {
   position: relative;
