@@ -144,7 +144,7 @@ header {
   height: 100%;
   background-color: #202020;
   color: #FFF;
-  overflow: auto; }
+  overflow: hidden; }
   .ws-canvas-properties section {
     margin: 65px 15px 15px 15px;
     display: none; }
@@ -229,10 +229,23 @@ a.button {
     background-color: #0060A1; }
     a.button.button-blue:hover {
       background-color: #006CB5; }
+  a.button.button-green {
+    background-color: #7ED200; }
+    a.button.button-green:hover {
+      background-color: #99FF00; }
   a.button.button-copy {
     float: left; }
   a.button.button-delete {
     float: right; }
+  a.button.button-add {
+    float: left; }
+  a.button.button-random {
+    float: right; }
+  a.button.button-generate {
+    float: left;
+    margin-top: 20px;
+    width: 190px;
+    text-align: center; }
 
 .ws-canvas-wrapper {
   position: relative;

@@ -29,6 +29,7 @@
 					<nav class="nav-right">
 						<a id="btn-ws-download" href="#"><i class="fa fa-download"></i></a>
 						<a id="btn-ws-new" href="#"><i class="fa fa-plus"></i></a>
+						<a id="btn-ws-bin" href="#"><i class="fa fa-trash-o"></i></a>
 					</nav>
 				</header>
 				<section id="workspace-canvas" class="workspace-canvas workspace-active">
@@ -62,7 +63,7 @@
 								<p>
 									<i class="fa fa-hand-o-up"></i> Move or edit a shape<br />
 									<i class="fa fa-square-o"></i> Generate quads<br />
-									<i class="fa fa-circle-o"></i> Generate circles<br />
+									<i class="fa fa-circle-o"></i> Generate ellipses<br />
 									<i class="fa fa-star-o"></i> Generate polygons<br />
 									<i class="fa fa-question"></i> Display this help<br />
 								</p>
@@ -71,7 +72,8 @@
 									<i class="fa fa-paint-brush"></i> Pattern editor<br />
 									<i class="fa fa-image"></i> Preview SVG<br />
 									<i class="fa fa-download"></i> Download SVG<br />
-									<i class="fa fa-plus"></i> Create new SVG
+									<i class="fa fa-plus"></i> Create new SVG<br />
+									<i class="fa fa-trash-o"></i> Delete SVG
 								</p>
 								<hr>
 								<p class="copyright">
@@ -129,6 +131,7 @@
 										<p class="pGroupTitle">Actions</p>
 										<a id="pShapeCopy" class="button button-blue button-copy" href="#"><i class="fa fa-paste"></i> <p>Copy</p></a>
 										<a id="pShapeDelete" class="button button-red button-delete "href="#"><i class="fa fa-trash-o"></i> <p>Delete</p></a>
+										<a id="pShapeGenerate" class="button button-green button-generate" href="#"><i class="fa fa-rocket"></i> <p>Generate Pattern</p></a>
 									</div>
 								</div>
 							</div>
@@ -139,18 +142,58 @@
 								<h1>Quad Tool</h1>
 							</div>
 							<div class="properties-pane">
-								<p>Generate squares</p>
+								<p>Generate quads</p>
 								<hr />
-								<a href="#">Add</a>
+								<div class="properties-quad-pane" id="properties-quad-pane">
+									<div class="pGroup">
+										<p class="pGroupTitle">Position &amp; Size</p>
+										<div class="pItem pItemLeft">
+											<label>X</label>
+											<input id="pQuadX" type="text" />
+										</div>
+										<div class="pItem pItemRight">
+											<label>Y</label>
+											<input id="pQuadY" type="text" />
+										</div>
+										<div class="pItem pItemLeft">
+											<label>W</label>
+											<input id="pQuadWidth" type="text" />
+										</div>
+										<div class="pItem pItemRight">
+											<label>H</label>
+											<input id="pQuadHeight" type="text" />
+										</div>
+									</div>
+									<div class="pGroup">
+										<p class="pGroupTitle">Style &amp; Stroke</p>
+										<div class="pItem pItemLeft">
+											<label>Radius</label>
+											<input id="pQuadRadius" type="text" />
+										</div>
+										<div class="pItem pItemLeft">
+											<label>Stroke</label>
+											<input id="pQuadStrokeWidth" type="text" />
+										</div>
+										<div class="pItem pItemLeft">
+											<label>Rotation</label>
+											<input id="pQuadRotation" type="text" />
+										</div>
+									</div>
+									<div class="pGroup">
+										<p class="pGroupTitle">Actions</p>
+										<a id="pQuadAdd" class="button button-green button-add" href="#"><i class="fa fa-plus"></i> <p>Add</p></a>
+										<a id="pQuadRandom" class="button button-blue button-random" href="#"><i class="fa fa-random"></i> <p>Random</p></a>
+									</div>
+								</div>
 							</div>
 						</section>
 						<section id="properties-circle">
 							<div class="properties-title">
 								<i class="properties-icon fa fa-circle-o"></i>
-								<h1>Circle tool</h1>
+								<h1>Ellipse tool</h1>
 							</div>
 							<div class="properties-pane">
-								<p>Generate circles</p>
+								<p>Generate ellipses</p>
 								<hr />
 							</div>
 						</section>

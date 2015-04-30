@@ -3,7 +3,9 @@ $color-workspace: #333;
 $color-grey: #666;
 $color-dark-grey: #202020;
 $color-white: #FFF;
+$color-dark-green: #7ED200;
 $color-green: #99FF00;
+$color-light-green: #CCFF00;
 $color-vdark-grey: #151515;
 $color-blue: #0060A1;
 $color-light-blue: #006CB5;
@@ -201,7 +203,7 @@ header {
 	height: 100%;
 	background-color: $color-dark-grey;	
 	color: #FFF;
-	overflow: auto;
+	overflow: hidden;
 
 	section {
 		margin: 65px 15px 15px 15px;
@@ -319,11 +321,29 @@ a.button {
 			background-color: $color-light-blue;
 		}	
 	}
+	&.button-green {
+		background-color: $color-dark-green;
+		&:hover {
+			background-color: $color-green;
+		}
+	}
 	&.button-copy {
 		float: left;
 	}
 	&.button-delete {
 		float: right;
+	}
+	&.button-add {
+		float: left;
+	}
+	&.button-random {
+		float: right;
+	}
+	&.button-generate {
+		float: left;
+		margin-top: 20px;
+		width: 190px;
+		text-align: center;
 	}
 }
 
