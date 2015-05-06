@@ -1,9 +1,16 @@
+// Are we testing?
+var testing = false;
+
+// Initial dimensions of the drawing canvas
 var canvasWidth = 550;
 var canvasHeight = 400;
-var testing = true;
+
+// Unique shape IDs
 var quadID = 0;
-var circleID = 0;
+var ellipseID = 0;
 var polygonID = 0;
+
+// Shape focussed/pressed/selected
 var svgFocus = null;
 var svgMousedown = null;
 var svgSelected = null;
@@ -11,36 +18,37 @@ var svgSelected = null;
 // Drawing state object
 var paper;
 
-// Drawing palette properties
-var palette = {
-	fillColour: "#FFF",
-	fillOpacity: "0",
-	opacity: 1,
-	stroke: '#000',
-	strokeColour: "#000",
-	strokeWidth: 2,
-	radius: 10,
-	rotation: 0,
-	width: 100,
-	height: 100,
-	x: 0,
-	y: 0
-};
-
 // Holds the set of SVG elements in canvas
 var currentStateSet;
+
+// Drawing palette properties
+var palette = {
+	x: 0,
+	y: 0,
+	width: 100,
+	height: 100,
+	radius: 10,
+	rotation: 0,
+	opacity: 1,
+	strokeWidth: 2,
+	vertices: 5,
+	stroke: '#000',
+	strokeColour: "#000",
+	fillColour: "#FFF",
+	fillOpacity: "0",
+	polyRadius1: 40,
+	polyRadius2: 20
+};
 
 // User's chosen tool type
 // 0 - none
 // 1 - hand
-// 2 - square
-// 3 - circle
-// 4 - star
+// 2 - quad
+// 3 - ellipse
+// 4 - polystar
 var toolType = 0;
 
-// Layers
-var layers = {};
-
+// When the document loads
 $(document).ready(function (){
 
 	// Remove welcome modal whilst testing
@@ -53,6 +61,9 @@ $(document).ready(function (){
 
 	// Set up event listeners
 	setupViewListeners();
+
+	// Set up key bindings
+	setupKeyBindings();
 
 	// Lift off!
 	rocketInitialise();
@@ -69,7 +80,6 @@ $(document).ready(function (){
 	// Set initial element sizes based on current viewport
 	resize();
 });
-
 
 // When the window resizes
 $(window).resize(function() {
@@ -109,19 +119,41 @@ function setupViewListeners() {
 	// Delete workspace button
 	$('#btn-ws-bin').click(function() {
 		paper.clear();
+		clearHandToolProperties();
+		quadID = 0;
+		ellipseID = 0;
+		polygonID = 0;
 		currentStateSet.clear();
 		svgSelected = null;
 	});
 }
 
+// Set up key bindings
+function setupKeyBindings() {
+
+	// Delete key
+	$(document).keyup(function(e) {
+		if(e.keyCode == 46) $("#pShapeDelete").click();
+	});	
+
+	// Escape key
+	$(document).keyup(function(e) {
+		if(svgSelected != null) {
+			var node = SVG.get(svgSelected).id();
+			if(e.keyCode == 27) $("#" + node).click().mouseout();
+		}
+	});	
+}
+
 // Set up toolkit
 function setupToolkit() {
+
+	// The default tool is the help tool
+	setTool(0);
 
 	// Set initial canvas width and height input values
 	$('#canvas-width').val(canvasWidth);
 	$('#canvas-height').val(canvasHeight);
-
-	setTool(0);
 
 	// Nominate help tool as primary
 	$('#toolkit-help').addClass("toolkit-active");
@@ -156,6 +188,7 @@ function setupToolkit() {
 		if(($('#canvas-width').val() > 0) && ($('#canvas-width').val() <= 1000)) {
 			canvasWidth = $('#canvas-width').val();
 			$('#ws-canvas').css("width", canvasWidth);
+			paper.size(canvasWidth, canvasHeight);
 		}
 	});
 
@@ -164,6 +197,7 @@ function setupToolkit() {
 		if(($('#canvas-height').val() > 0) && ($('#canvas-height').val() <= 1000)) {
 			canvasHeight = $('#canvas-height').val();
 			$('#ws-canvas').css("height", canvasHeight);
+			paper.size(canvasWidth, canvasHeight);
 		}
 	});
 }
@@ -173,56 +207,108 @@ function setupProperties() {
 
 	// Hand Tool Shape x coordinate
 	$("#pShapeX").change(function() {
-		SVG.get(svgSelected).animate().attr({x:this.value});
-		palette.x = this.value;
+		switch(SVG.get(svgSelected).type) {
+			case "rect":
+				SVG.get(svgSelected).animate().attr({x:parseInt(this.value)});
+				break;
+			case "polygon":
+			case "ellipse":
+				SVG.get(svgSelected).animate().transform({x:parseInt(this.value)});
+				break;
+		}
+		palette.x = parseInt(this.value);
 	});
 
 	// Hand Tool Shape y coordinate
 	$("#pShapeY").change(function() {
-		SVG.get(svgSelected).animate().attr({y:this.value});
-		palette.y = this.value;
+		switch(SVG.get(svgSelected).type) {
+			case "rect":
+				SVG.get(svgSelected).animate().attr({y:parseInt(this.value)});
+				break;
+			case "polygon":
+			case "ellipse":
+				SVG.get(svgSelected).animate().transform({y:parseInt(this.value)});
+				break;	
+		}
+		palette.y = parseInt(this.value);
 	});
 
 	// Hand Tool Shape width
 	$("#pShapeWidth").change(function() {
-		SVG.get(svgSelected).animate().attr({width:this.value});
-		palette.width = this.value;
+		switch(SVG.get(svgSelected).type) {
+			case "rect":
+				SVG.get(svgSelected).animate().attr({width:parseInt(this.value)});
+				break;
+			case "polygon":
+			case "ellipse":
+				SVG.get(svgSelected).width(parseInt(this.value));
+				break;	
+		}
+		palette.width = parseInt(this.value);
 	});
 
 	// Hand Tool Shape height
 	$("#pShapeHeight").change(function() {
-		SVG.get(svgSelected).animate().attr({height:this.value});
-		palette.height = this.value;
+		switch(SVG.get(svgSelected).type) {
+			case "rect":
+				SVG.get(svgSelected).animate().attr({height:parseInt(this.value)});
+				break;
+			case "polygon":
+			case "ellipse":
+				SVG.get(svgSelected).height(parseInt(this.value));
+				break;	
+		}
+		palette.height = parseInt(this.value);
 	});
 
 	// Hand Tool Shape radius
 	$("#pShapeRadius").change(function() {
-		SVG.get(svgSelected).animate().radius(this.value);
-		palette.radius = this.value;
+		SVG.get(svgSelected).animate().radius(parseInt(this.value));
+		palette.radius = parseInt(this.value);
 	});
 
 	// Hand Tool Shape stroke width
 	$("#pShapeStrokeWidth").change(function() {
-		SVG.get(svgSelected).animate().attr({"stroke-width":this.value});
-		palette.strokeWidth = this.value;
-		console.log(palette.strokeWidth);
+		SVG.get(svgSelected).animate().attr({"stroke-width":parseInt(this.value)});
+		palette.strokeWidth = parseInt(this.value);
 	});
 
 	// Hand Tool Shape rotation
 	$("#pShapeRotation").change(function() {
-		SVG.get(svgSelected).animate().transform({rotation:this.value});
-		palette.rotation = this.value;
+		SVG.get(svgSelected).animate().transform({rotation:parseInt(this.value)});
+		palette.rotation = parseInt(this.value);
 	});
 
 	// Hand Tool Shape copy
 	$("#pShapeCopy").click(function() {
+
 		switch(SVG.get(svgSelected).type) {
+
 			case "rect":
 				var rect2copy = SVG.get(svgSelected);
 				palette.radius = rect2copy.node.attributes.rx.value;
-				palette.strokeWidth = rect2copy.node.attributes[5].value;
+				palette.strokeWidth = rect2copy.attr("stroke-width");
 				palette.rotation = rect2copy.transform().rotation;
 				makeRect(rect2copy.width(), rect2copy.height(), rect2copy.x()+10, rect2copy.y()+10);
+				break;
+
+			case "ellipse":
+				var ellipse2copy = SVG.get(svgSelected);
+				palette.strokeWidth = ellipse2copy.attr("stroke-width");
+				palette.width = ellipse2copy.width();
+				palette.height = ellipse2copy.height();
+				makeEllipse(ellipse2copy.transform().x+10, ellipse2copy.transform().y+10);
+				break;
+
+			case "polygon":
+				var polygon2copy = SVG.get(svgSelected);
+				palette.strokeWidth = polygon2copy.attr("stroke-width");
+				palette.width = polygon2copy.width();
+				palette.height = polygon2copy.height();
+				palette.x = polygon2copy.x()+polygon2copy.width()/2+10;
+				palette.y = polygon2copy.y()+polygon2copy.height()/2+10;
+				makePoly(1);
+				break;
 		}
 	});
 
@@ -235,43 +321,68 @@ function setupProperties() {
 
 	// Hand Tool Generate
 	$("#pShapeGenerate").click(function() {
-		drawSpiral(5, 10);
+		switch(SVG.get(svgSelected).type) {
+			case "rect":
+				drawSpiral(5, 10);
+				break;
+			case "ellipse":
+				drawScope(5);
+				break;
+			case "polygon":
+				drawSpectacle();
+				break;
+		}
 	});
 
-	// Quad Tools
-	// Quad Tool Shape x coordinate
-	$("#pQuadX").change(function() {
-		palette.x = this.value;
+	// Other Tools
+	// Tool shape x coordinate
+	$("#pQuadX, #pEllipseX, #pPolyX").change(function() {
+		palette.x = parseInt(this.value);
 	});
 
-	// Quad Tool Shape y coordinate
-	$("#pQuadY").change(function() {
-		palette.y = this.value;
+	// Tool shape y coordinate
+	$("#pQuadY, #pEllipseY, #pPolyY").change(function() {
+		palette.y = parseInt(this.value);
 	});
 
-	// Quad Tool Shape width
-	$("#pQuadWidth").change(function() {
-		palette.width = this.value;
+	// Tool shape width
+	$("#pQuadWidth, #pEllipseWidth").change(function() {
+		palette.width = parseInt(this.value);
 	});
 
-	// Quad Tool Shape height
-	$("#pQuadHeight").change(function() {
-		palette.height = this.value;
+	// Tool shape height
+	$("#pQuadHeight, #pEllipseHeight").change(function() {
+		palette.height = parseInt(this.value);
 	});
 
 	// Quad Tool Shape radius
 	$("#pQuadRadius").change(function() {
-		palette.radius = this.value;
+		palette.radius = parseInt(this.value);
 	});
 
-	// Quad Tool Shape stroke width
-	$("#pQuadStrokeWidth").change(function() {
-		palette.strokeWidth = this.value;
+	// Poly tool outer radius
+	$("#pPolyRadius1").change(function() {
+		palette.polyRadius1 = parseInt(this.value);
 	});
 
-	// Quad Tool Shape rotation
-	$("#pQuadRotation").change(function() {
-		palette.rotation = this.value;
+	// Poly tool inner radius
+	$("#pPolyRadius2").change(function() {
+		palette.polyRadius2 = parseInt(this.value);
+	});
+
+	// Poly tool vertices
+	$("#pPolyVertices").change(function() {
+		palette.vertices = parseInt(this.value);
+	});
+
+	// Tool shape stroke width
+	$("#pQuadStrokeWidth, #pEllipseStrokeWidth, #pPolyStrokeWidth").change(function() {
+		palette.strokeWidth = parseInt(this.value);
+	});
+
+	// Tool shape rotation
+	$("#pQuadRotation, #pPolyRotation").change(function() {
+		palette.rotation = parseInt(this.value);
 	});
 
 	// Quad Add Tool
@@ -282,7 +393,31 @@ function setupProperties() {
 	// Quad Random Tool
 	$("#pQuadRandom").click(function() {
 		makeRandomSquare(1);
-	})
+	});
+
+	// Ellipse Add Tool
+	$("#pEllipseAdd").click(function() {
+		makeEllipse(palette.x, palette.y);
+	});
+
+	// Ellipse Random Tool
+	$("#pEllipseRandom").click(function() {
+		makeRandomEllipse(1);
+	});
+
+	// Poly Add Tool
+	$("#pPolyAdd").click(function() {
+		if(palette.polyRadius1 == 0 || palette.polyRadius2 == 0) {
+			makePoly();
+		} else {
+			makePoly(1);
+		}
+	});
+
+	// Poly Random Tool
+	$("#pPolyRandom").click(function() {
+		makeRandomPoly(1);
+	});
 }
 
 // Change tool type
@@ -328,10 +463,12 @@ function setTool(t) {
 		case 3:
 			$("#toolkit-circle").addClass("toolkit-active");
 			$('#properties-circle').show();
+			populateEllipseToolProperties();
 			break;
 		case 4:
 			$("#toolkit-star").addClass("toolkit-active");
 			$('#properties-star').show();
+			populatePolystarToolProperties();
 			break;
 		default:
 			break;
@@ -386,7 +523,9 @@ function setupCanvasPlotting() {
 
 	// Call main plotting function with cursor coordinates
 	$('#ws-canvas').click(function() {
-		console.log("CLICK: canvas");
+		if(testing) {
+			console.log("CLICK: canvas");
+		}
 		var cXPos = event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width();
 		var cYPos = event.clientY - $("#ws-canvas").offset().top;
 
@@ -400,11 +539,39 @@ function plot(cXPos, cYPos) {
 	// Decide what to plot
 	switch(toolType) {
 
-		// Plot square
+		// Plot quad
 		case 2:
-			console.log("DRAW: rect");
-			console.log(cXPos + " : " + cYPos)
-			makeRect(palette.width, palette.height, cXPos-50, cYPos-50);
+			if(testing) {
+				console.log("DRAW: rect");
+				console.log(cXPos + " : " + cYPos);
+			}
+			makeRect(palette.width, palette.height, cXPos-palette.width/2, cYPos-palette.height/2);
+			break;
+
+		// Plot ellipse
+		case 3:
+			if(testing) {
+				console.log("DRAW: ellipse");
+				console.log(cXPos + " : " + cYPos);
+			}
+			makeEllipse(cXPos-(palette.width/2), cYPos-(palette.height/2));
+			break;
+
+		// Plot poly
+		case 4:
+			if(testing) {
+				console.log("DRAW: poly");
+				console.log(cXPos + " : " + cYPos);
+			}
+			if(palette.polyRadius1 == 0 || palette.polyRadius2 == 0) {
+				palette.x = cXPos;
+				palette.y = cYPos;
+				makePoly();
+			} else {
+				palette.x = cXPos;
+				palette.y = cYPos;
+				makePoly(1);
+			}
 			break;
 	}
 }
@@ -463,6 +630,29 @@ function makeSquare(x, y, w, h, r, s, rt) {
 	currentStateSet.add(rect);
 }
 
+// Draw an ellipse
+function makeEllipse(x, y) {
+
+	ellipseID = ++ellipseID;
+
+	var ellipse = paper.ellipse(palette.width, palette.height).id("ellipse-" + ellipseID).attr({
+		fill: "#FFF",
+		"fill-opacity": "0",
+		opacity: 1,
+		stroke: "#000",
+		"stroke-width": palette.strokeWidth
+	}).transform({
+		x: x,
+		y: y
+	});
+
+	// Events
+	svgNodeInteractions(ellipse);
+
+	// Add ellipse to set
+	currentStateSet.add(ellipse);
+}
+
 // SHAPE :: MAKE RANDOM SQUARE
 function makeRandomSquare(n) {
 
@@ -480,6 +670,100 @@ function makeRandomSquare(n) {
 	}
 }
 
+// SHAPE :: MAKE RANDOM ELLIPSE
+function makeRandomEllipse(n) {
+
+	for (var i = 0; i < n; i++) {
+		palette.width = Math.floor(Math.random() * 250) + 50;
+		palette.height = palette.width;
+		palette.x = Math.floor(Math.random() * canvasWidth) - palette.width/2;
+		palette.y = Math.floor(Math.random() * canvasHeight) - palette.width/2;
+		palette.strokeWidth = Math.ceil(Math.random() * 10);
+
+		makeEllipse(palette.x, palette.y);
+	}
+}
+
+// SHAPE :: POLYGON
+function makePoly(polystar, w, h) {
+
+	polygonID = ++polygonID;
+
+	// Point arrays
+	var xPoints1 = [];
+	var xPoints2 = [];
+	var yPoints1 = [];
+	var yPoints2 = [];
+
+	// Polygon points string
+	var polygonString = "";
+
+	// Get polygon vertex coordinates
+	for(var i = 0; i < palette.vertices; i++) {
+
+		xPoints1.push((palette.x + ((palette.polyRadius1) * Math.cos(i * 2 * Math.PI / palette.vertices))));
+		yPoints1.push((palette.y + ((palette.polyRadius1) * Math.sin(i * 2 * Math.PI / palette.vertices))));
+
+		if(polystar == 1) {
+
+			xPoints2.push((palette.x + ((palette.polyRadius2) * Math.cos((i * 2 * Math.PI / palette.vertices) + Math.PI / palette.vertices))));
+			yPoints2.push((palette.y + ((palette.polyRadius2) * Math.sin((i * 2 * Math.PI / palette.vertices) + Math.PI / palette.vertices))));
+
+			// Add next coordinates to the polygon string
+			polygonString = polygonString + xPoints1[i] + "," + yPoints1[i] + " " + xPoints2[i] + "," + yPoints2[i] + " ";
+
+		} else {
+
+			// Add next coordinates to the polygon string
+			polygonString = polygonString + xPoints1[i] + "," + yPoints1[i] + " ";
+		}
+	}
+
+	// Draw polygon
+	var poly = paper.polygon(polygonString).id("polygon-" + polygonID).attr({
+		fill: palette.fillColour,
+		stroke: palette.strokeColour,
+		"stroke-width": palette.strokeWidth,
+		x: palette.x,
+		y: palette.y,
+		"fill-opacity": palette.fillOpacity,
+		opacity: palette.opacity
+	}).transform({
+		rotation: palette.rotation
+	});
+
+	if(w != undefined) {
+		poly.width(w);
+		poly.height(h);
+		poly.transform({cx: palette.x, cy: palette.y})
+	}
+
+	// Events
+	svgNodeInteractions(poly);
+
+	// Add ellipse to set
+	currentStateSet.add(poly);
+}
+
+// SHAPE :: MAKE RANDOM POLY
+function makeRandomPoly(n) {
+
+	var p;
+
+	for(var i = 0; i < n; i++) {
+		palette.polyRadius1 = Math.floor(Math.random() * 50) + 50;
+		palette.polyRadius2 = Math.floor(Math.random() * 50);
+		palette.x = Math.floor(Math.random() * canvasWidth) - palette.polyRadius2/2;
+		palette.y = Math.floor(Math.random() * canvasHeight) - palette.polyRadius2/2;
+		palette.vertices = Math.floor(Math.random() * 10)+3;
+		palette.strokeWidth = Math.ceil(Math.random() * 10);
+		palette.rotation = Math.floor(Math.random() * 360);
+		p = Math.round(Math.random());
+
+		makePoly(p);
+	}	
+}
+
 // PATTERN :: SPIRAL
 function drawSpiral(iterations, rotationStep) {
 
@@ -489,8 +773,7 @@ function drawSpiral(iterations, rotationStep) {
 	var g = Math.floor(s.width() / iterations);
 
 	// Origin of original shape
-	var originX;
-	var originY;
+	var originX, originY;
 
 	// Rotation of original shape
 	var r = s.transform().rotation;
@@ -503,7 +786,7 @@ function drawSpiral(iterations, rotationStep) {
 		originY = s.y()+((g*i)/2);
 
 		// Attributes of next iteration
-		palette.strokeWidth = s.node.attributes[5].value;
+		palette.strokeWidth = s.attr("stroke-width");
 		palette.radius = Math.floor(palette.radius - ((palette.radius / iterations) * (i-1)));
 		palette.rotation = r+(rotationStep * i);
 
@@ -514,32 +797,45 @@ function drawSpiral(iterations, rotationStep) {
 	// Reset palette state
 	palette.rotation = 0;
 	palette.radius = s.node.attributes.rx.value;
+	palette.strokeWidth = s.attr("stroke-width");
 }
 
-// PATTERN :: POLYGON
-function drawPolygon(x, y, v, r, colour, strokeColour, strokeWidth, rotation) {
-
-	// Point arrays
-	var xPoints = [];
-	var yPoints = [];
-
-	// Polygon points string
-	var polygonString = "";
-
-	// Get polygon vertex coordinates
-	for(var i = 0; i < sides; i++) {
-		polygonXPoints.push((x + ((r * 2) * Math.cos(i * 2 * Math.PI / sides))));
-		polygonYPoints.push((y + ((r * 2) * Math.sin(i * 2 * Math.PI / sides))));
-
-		// Add next coordinates to the polygon string
-		polygonString = polygonString + polygonXPoints[i] + "," + polygonYPoints[i] + " ";
+// PATTERN :: SCOPE
+function drawScope(iterations) {
+	var s = SVG.get(svgSelected);
+	var g = Math.floor(s.width() / iterations);
+	var originX, originY;
+	for (var i = 1; i <= iterations; i++) {
+		palette.width = s.width()-(g*i);
+		palette.height = s.height()-(g*i);
+		originX = s.transform().x+((g*i)/2);
+		originY = s.transform().y+((g*i)/2);
+		palette.strokeWidth = s.attr("stroke-width");
+		makeEllipse(originX, originY);
 	}
 
-	// Draw polygon
-	draw.polygon(polygonString).attr({
-		"stroke-width": 1,
-		fill: "#FFF"
-	});
+	palette.width = s.width();
+	palette.height = s.height();
+	palette.x = 0;
+	palette.y = 0;
+}
+
+// PATTERN :: SPECTACLE
+function drawSpectacle() {
+
+	palette.x = SVG.get(svgSelected).x();
+	palette.y = SVG.get(svgSelected).y();
+	palette.vertices = 5;
+	palette.fillOpacity = 1;
+
+	for (var i = 0; i < (25); i++) {
+		palette.rotation = i * 10;
+		palette.width -= 2;
+		palette.height -= 2;
+		makePoly(1, palette.width, palette.height);
+	}
+
+	palette.fillOpacity = 0;
 }
 
 var store;
@@ -566,33 +862,47 @@ function populateHandToolProperties() {
 
 	if(svgSelected != null) {
 
+		$("#properties-hand-pane").show();
+
 		switch(SVG.get(svgSelected).type) {
 
 			// Hand tool for quads
 			case "rect":
-				$("#properties-hand-pane").show();
-				$("#pShapeID").html('<i class="fa fa-square-o"></i>' + svgSelected);
-				$("#pShapeX").val(SVG.get(svgSelected).x());
-				$("#pShapeY").val(SVG.get(svgSelected).y());
-				$("#pShapeWidth").val(SVG.get(svgSelected).width());
-				$("#pShapeHeight").val(SVG.get(svgSelected).height());
-				$("#pShapeRadius").val(SVG.get(svgSelected).node.attributes.rx.value);
-				$("#pShapeStrokeWidth").val(SVG.get(svgSelected).node.attributes[5].value);
-				$("#pShapeRotation").val(SVG.get(svgSelected).transform().rotation);
+				$("#pShapeID").show().html('<i class="fa fa-square-o"></i>' + svgSelected);
+				$("#pShapeX").show().val(parseInt(SVG.get(svgSelected).x()));
+				$("#pShapeY").show().val(parseInt(SVG.get(svgSelected).y()));
+				$("#pShapeWidth").show().val(parseInt(SVG.get(svgSelected).width()));
+				$("#pShapeHeight").show().val(parseInt(SVG.get(svgSelected).height()));
+				$("#pShapeRadius").show().val(parseInt(SVG.get(svgSelected).node.attributes.rx.value));
+				$("#pShapeStrokeWidth").show().val(SVG.get(svgSelected).attr("stroke-width"));
+				$("#pShapeRotation").show().val(SVG.get(svgSelected).transform().rotation);
+				break;
+			
+			// Hand tool for ellipses
+			case "ellipse":
+				$("#pShapeID").show().html('<i class="fa fa-circle-o"></i>' + svgSelected);
+				$("#pShapeX").show().val(parseInt(SVG.get(svgSelected).transform().x));
+				$("#pShapeY").show().val(parseInt(SVG.get(svgSelected).transform().y));
+				$("#pShapeWidth").show().val(parseInt(SVG.get(svgSelected).width()));
+				$("#pShapeHeight").show().val(parseInt(SVG.get(svgSelected).height()));
+				$("#pShapeRadius").show().val("-");
+				$("#pShapeStrokeWidth").show().val(SVG.get(svgSelected).attr("stroke-width"));
+				$("#pShapeRotation").show().val("-");
+				break;
+
+			// Hand tool for polygon
+			case "polygon":
+				$("#pShapeID").show().html('<i class="fa fa-star-o"></i>' + svgSelected);
+				$("#pShapeX").show().val(parseInt(SVG.get(svgSelected).x()));
+				$("#pShapeY").show().val(parseInt(SVG.get(svgSelected).y()));
+				$("#pShapeWidth").show().val(parseInt(SVG.get(svgSelected).width()));
+				$("#pShapeHeight").show().val(parseInt(SVG.get(svgSelected).height()));
+				$("#pShapeRadius").show().val("-");		
+				$("#pShapeStrokeWidth").show().val(SVG.get(svgSelected).attr("stroke-width"));
+				$("#pShapeRotation").show().val(SVG.get(svgSelected).transform().rotation);
+				break;
 		}
 	}
-}
-
-// Update and populte quad tool properties pane
-function populateQuadToolProperties() {
-
-	$("#pQuadX").val(palette.x);
-	$("#pQuadY").val(palette.y);
-	$("#pQuadWidth").val(palette.width);
-	$("#pQuadHeight").val(palette.height);
-	$("#pQuadRadius").val(palette.radius);
-	$("#pQuadStrokeWidth").val(palette.strokeWidth);
-	$("#pQuadRotation").val(palette.rotation);
 }
 
 // Clear hand tool properties pane
@@ -608,6 +918,37 @@ function clearHandToolProperties() {
 	$("#pShapeRotation").val("");
 }
 
+// Update and populte quad tool properties pane
+function populateQuadToolProperties() {
+	$("#pQuadX").val(palette.x);
+	$("#pQuadY").val(palette.y);
+	$("#pQuadWidth").val(palette.width);
+	$("#pQuadHeight").val(palette.height);
+	$("#pQuadRadius").val(palette.radius);
+	$("#pQuadStrokeWidth").val(palette.strokeWidth);
+	$("#pQuadRotation").val(palette.rotation);
+}
+
+// Update and populate ellipse tool properties pane
+function populateEllipseToolProperties() {
+	$("#pEllipseX").val(palette.x);
+	$("#pEllipseY").val(palette.y);
+	$("#pEllipseWidth").val(palette.width);
+	$("#pEllipseHeight").val(palette.height);
+	$("#pEllipseStrokeWidth").val(palette.strokeWidth);
+}
+
+// Update and populate polystar tool properties pane
+function populatePolystarToolProperties() {
+	$("#pPolyX").val(palette.x);
+	$("#pPolyY").val(palette.y);
+	$("#pPolyRadius1").val(palette.polyRadius1);
+	$("#pPolyRadius2").val(palette.polyRadius2);
+	$("#pPolyVertices").val(palette.vertices);
+	$("#pPolyStrokeWidth").val(palette.strokeWidth);
+	$("#pPolyRotation").val(palette.rotation);
+}
+
 // Mouse interactions with nodes
 function svgNodeInteractions(node) {
 
@@ -616,7 +957,9 @@ function svgNodeInteractions(node) {
 
 		// Only register a mouseover event when using hand tool
 		if(toolType == 1) {
-			console.log("MOUSEOVER: " + this.id());
+			if(testing) {
+				console.log("MOUSEOVER: " + this.id());
+			}
 			$("#ws-canvas").css("cursor", "pointer");
 
 			// Do not show a red border if node is selected
@@ -635,7 +978,9 @@ function svgNodeInteractions(node) {
 
 		// Only register a mouseout event when using hand tool
 		if(toolType == 1) {
-			console.log("MOUSEOUT: " + this.id());
+			if(testing) {
+				console.log("MOUSEOUT: " + this.id());
+			}
 			$("#ws-canvas").css("cursor", "auto");
 
 			// Do not remove border if node is selected
@@ -655,7 +1000,9 @@ function svgNodeInteractions(node) {
 
 		// Only register a mousedown event when using hand tool
 		if(toolType == 1) {
-			console.log("MOUSEDOWN: " + this.id());
+			if(testing) {
+				console.log("MOUSEDOWN: " + this.id());
+			}
 			$("#ws-canvas").css("cursor", "move");
 
 			// Mouse is down on this element
@@ -667,7 +1014,9 @@ function svgNodeInteractions(node) {
 		
 		// Only register a mouseup event when using hand tool
 		if(toolType == 1) {
-			console.log("MOUSEUP: " + this.id());
+			if(testing) {
+				console.log("MOUSEUP: " + this.id());
+			}
 			$("#ws-canvas").css("cursor", "pointer");
 
 			// Unregister mousedown
@@ -687,10 +1036,20 @@ function svgNodeInteractions(node) {
 				this.front();
 
 				// Move node coordinates to cursor position
-				SVG.get(svgMousedown).attr({
-					x: (event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width() - (this.width() / 2)), 
-					y: (event.clientY - $("#ws-canvas").offset().top  - (this.height() / 2))
-				});
+				if(SVG.get(svgMousedown).type == "ellipse") {
+					SVG.get(svgMousedown).transform({
+						x: (event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width() - (this.width() / 2)), 
+						y: (event.clientY - $("#ws-canvas").offset().top  - (this.height() / 2))
+					});
+				} else if(SVG.get(svgMousedown).type == "polygon") {
+					SVG.get(svgMousedown).x((event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width() - (this.width() / 2))); 
+					SVG.get(svgMousedown).y((event.clientY - $("#ws-canvas").offset().top  - (this.height() / 2)));
+				} else {
+					SVG.get(svgMousedown).attr({
+						x: (event.clientX - $("#ws-canvas").offset().left - $('#ws-canvas-toolkit').width() - (this.width() / 2)), 
+						y: (event.clientY - $("#ws-canvas").offset().top  - (this.height() / 2))
+					});
+				}
 
 				// Update properties pane
 				populateHandToolProperties();
@@ -712,8 +1071,9 @@ function svgNodeInteractions(node) {
 						stroke: palette.strokeColour,
 					});
 				}
-
-				console.log("CLICK: " + this.id());
+				if(testing) {
+					console.log("CLICK: " + this.id());
+				}
 
 				// This is now selected
 				svgSelected = this.id();

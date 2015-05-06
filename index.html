@@ -195,21 +195,96 @@
 							<div class="properties-pane">
 								<p>Generate ellipses</p>
 								<hr />
+								<div class="properties-ellipses-pane" id="properties-ellipses-pane">
+									<div class="pGroup">
+										<p class="pGroupTitle">Position &amp; Size</p>
+										<div class="pItem pItemLeft">
+											<label>X</label>
+											<input id="pEllipseX" type="text" />
+										</div>
+										<div class="pItem pItemRight">
+											<label>Y</label>
+											<input id="pEllipseY" type="text" />
+										</div>
+										<div class="pItem pItemLeft">
+											<label>W</label>
+											<input id="pEllipseWidth" type="text" />
+										</div>
+										<div class="pItem pItemRight">
+											<label>H</label>
+											<input id="pEllipseHeight" type="text" />
+										</div>
+									</div>
+									<div class="pGroup">
+										<p class="pGroupTitle">Style &amp; Stroke</p>
+										<div class="pItem pItemLeft">
+											<label>Stroke</label>
+											<input id="pEllipseStrokeWidth" type="text" />
+										</div>
+									</div>
+									<div class="pGroup">
+										<p class="pGroupTitle">Actions</p>
+										<a id="pEllipseAdd" class="button button-green button-add" href="#"><i class="fa fa-plus"></i> <p>Add</p></a>
+										<a id="pEllipseRandom" class="button button-blue button-random" href="#"><i class="fa fa-random"></i> <p>Random</p></a>
+									</div>
+								</div>
 							</div>
 						</section>
 						<section id="properties-star">
 							<div class="properties-title">
 								<i class="properties-icon fa fa-star-o"></i>
-								<h1>Polygon Tool</h1>
+								<h1>Polystar Tool</h1>
 							</div>
 							<div class="properties-pane">
 								<p>Generate polygons</p>
 								<hr />
+								<div class="properties-polystar-pane" id="properties-polystar-pane">
+									<div class="pGroup">
+										<p class="pGroupTitle">Position &amp; Size</p>
+										<div class="pItem pItemLeft">
+											<label>X</label>
+											<input id="pPolyX" type="text" />
+										</div>
+										<div class="pItem pItemRight">
+											<label>Y</label>
+											<input id="pPolyY" type="text" />
+										</div>
+										<div class="pItem pItemLeft">
+											<label>Outer</label>
+											<input id="pPolyRadius1" type="text" />
+										</div>
+										<div class="pItem pItemRight">
+											<label>Inner</label>
+											<input id="pPolyRadius2" type="text" />
+										</div>
+										<div class="pItem pItemLeft">
+											<label>Vertices</label>
+											<input id="pPolyVertices" type="text" />
+										</div>
+									</div>
+									<div class="pGroup">
+										<p class="pGroupTitle">Style &amp; Stroke</p>
+										<div class="pItem pItemLeft">
+											<label>Stroke</label>
+											<input id="pPolyStrokeWidth" type="text" />
+										</div>
+										<div class="pItem pItemLeft">
+											<label>Rotation</label>
+											<input id="pPolyRotation" type="text" />
+										</div>
+									</div>
+									<div class="pGroup">
+										<p class="pGroupTitle">Actions</p>
+										<a id="pPolyAdd" class="button button-green button-add" href="#"><i class="fa fa-plus"></i> <p>Add</p></a>
+										<a id="pPolyRandom" class="button button-blue button-random" href="#"><i class="fa fa-random"></i> <p>Random</p></a>
+									</div>
+								</div>
 							</div>
 						</section>
 					</div>
 				</section>
 				<section id="workspace-output" class="workspace-output">
+				
 				</section>
 			</section>
 		</div>
