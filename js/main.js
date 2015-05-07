@@ -104,6 +104,27 @@ function setupWelcomeModal() {
 	$('#btn-begin').click(function() {	
 		$('#welcome-modal').fadeOut(500);
 	});
+
+	// Import go button
+	$("#btn-import-go").click(function() {
+		importSVG($("#svg-import-field").val());
+		$("#welcome-modal").fadeOut(500);
+	});
+
+	// Import pattern button
+	$("#btn-import").click(function() {
+		$("#btn-begin, #btn-import").hide();
+		$("#svg-import-field").css("display", "inline-block");
+		$("#btn-import-go").css("display", "inline-block");
+	});
+
+	// New pattern button
+	$("#btn-ws-new").click(function() {
+		$("#svg-import-field, #btn-import-go").hide();
+		$("#btn-begin, #btn-import").show();
+		$("#welcome-modal").fadeIn(500);
+		resetCanvas();
+	});
 }
 
 // Set up event listeners
@@ -132,13 +153,7 @@ function setupViewListeners() {
 
 	// Delete workspace button
 	$('#btn-ws-bin').click(function() {
-		paper.clear();
-		clearHandToolProperties();
-		quadID = 0;
-		ellipseID = 0;
-		polygonID = 0;
-		currentStateSet.clear();
-		svgSelected = null;
+		resetCanvas();
 	});
 }
 
@@ -156,6 +171,17 @@ function setupKeyBindings() {
 			if(e.keyCode == 27) $("#" + SVG.get(svgSelected).id()).click().mouseout();
 		}
 	});	
+}
+
+// Reset canvas
+function resetCanvas() {
+	paper.clear();
+	clearHandToolProperties();
+	quadID = 0;
+	ellipseID = 0;
+	polygonID = 0;
+	currentStateSet.clear();
+	svgSelected = null;
 }
 
 // Set up toolkit
@@ -854,11 +880,9 @@ function drawSpectacle() {
 var store;
 
 // IMPORT SVG
-function importSVG() {
+function importSVG(importedSVG) {
 
-	var importedPattern = '<svg id="SvgjsSvg1000" xmlns="http://www.w3.org/2000/svg" version="1.1" width="550" height="400" xmlns:xlink="http://www.w3.org/1999/xlink"><rect id="SvgjsRect1006" width="25" height="25" fill="#dc09e9" stroke="none" stroke-width="1" x="325" y="70" radius="0"></rect><rect id="SvgjsRect1007" width="28" height="28" fill="#45725e" stroke="none" stroke-width="1" x="157" y="304" radius="0"></rect><rect id="SvgjsRect1009" width="25" height="25" fill="#934ade" stroke="none" stroke-width="1" x="281" y="27" radius="0"></rect><rect id="SvgjsRect1010" width="25" height="25" fill="#e81d2c" stroke="none" stroke-width="1" x="434" y="144" radius="0"></rect><rect id="SvgjsRect1008" width="57" height="57" fill="#22930b" stroke-width="0" x="213.5" y="176" radius="0"></rect><defs id="SvgjsDefs1001"></defs></svg>';		
-
-	store = paper.svg(importedPattern);
+	store = paper.svg(importedSVG);
 
 	for (var i = 0; i < store.roots()[0].children().length; i++) {
 

@@ -66,6 +66,10 @@ header {
   left: 0;
   margin: auto;
   text-align: center; }
+  .welcome .svg-import-field {
+    display: none; }
+  .welcome .btn-import-go {
+    display: none; }
   .welcome h1 {
     margin-top: 30px;
     margin-bottom: 50px;
@@ -97,6 +101,23 @@ header {
       display: inline; }
     .welcome a:hover {
       background-color: #101010; }
+  .welcome input {
+    border: 0;
+    background-color: #0C0C0C;
+    padding: 15px;
+    width: 300px;
+    color: #FFF;
+    font-size: 1.0em;
+    outline: none; }
+  .welcome ::-webkit-input-placeholder {
+    color: #555; }
+  .welcome :-moz-placeholder {
+    color: #555;
+    opacity: 1; }
+  .welcome ::-moz-placeholder {
+    color: #555; }
+  .welcome :-ms-input-placeholder {
+    color: #555; }
 
 .workspace-canvas, .workspace-output {
   display: none;

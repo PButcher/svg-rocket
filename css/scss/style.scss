@@ -15,6 +15,7 @@ $color-blue: #0060A1;
 $color-light-blue: #006CB5;
 $color-red: #B0281A;
 $color-light-red: #D14836;
+$color-placeholder: #555;
 
 html, body {
 	height: 100%;
@@ -101,6 +102,13 @@ header {
 	margin: auto;
 	text-align: center;
 
+	.svg-import-field {
+		display: none;
+	}
+	.btn-import-go {
+		display: none
+	}
+
 	h1 {
 		margin-top: 30px;
 		margin-bottom: 50px;
@@ -127,7 +135,6 @@ header {
 		background-color: $color-w-btn-d;
 		text-align: center;
 		text-decoration: none;
-//		box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 
 		i {
 			margin-right: 15px;
@@ -139,6 +146,28 @@ header {
 		&:hover {
 			background-color: $color-w-btn-l;
 		}
+	}
+	input {
+		border: 0;
+		background-color: $color-w-btn-d;
+		padding: 15px;
+		width: 300px;
+		color: $color-white;
+		font-size: 1.0em;
+		outline: none;
+	}
+	::-webkit-input-placeholder {
+		color: $color-placeholder;
+	}
+	:-moz-placeholder {
+		color: $color-placeholder;
+		opacity: 1;
+	}
+	::-moz-placeholder {
+		color: $color-placeholder;
+	}
+	:-ms-input-placeholder {
+		color: $color-placeholder;
 	}
 }
 
