@@ -307,5 +307,19 @@ a.button {
     background-color: #FFF;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     overflow: hidden; }
+  .ws-canvas-wrapper .svg-export-field, .ws-output-wrapper .svg-export-field {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    border: 0;
+    background-color: #0C0C0C;
+    padding: 15px;
+    width: 75%;
+    color: #FFF;
+    font-size: 1.0em;
+    outline: none; }
 
 /*# sourceMappingURL=style.css.map */

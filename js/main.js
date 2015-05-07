@@ -144,6 +144,7 @@ function setupViewListeners() {
 			$("#" + SVG.get(svgSelected).id()).click().mouseout();
 		}
 		$("#ws-output").html($("#ws-canvas").html());
+		$("#svg-export-field").val($("#ws-canvas").html());
 	});
 
 	// Download button
@@ -251,6 +252,8 @@ function setupProperties() {
 				SVG.get(svgSelected).animate().attr({x:parseInt(this.value)});
 				break;
 			case "polygon":
+				SVG.get(svgSelected).animate().x(parseInt(this.value));
+				break;
 			case "ellipse":
 				SVG.get(svgSelected).animate().transform({x:parseInt(this.value)});
 				break;
@@ -265,6 +268,8 @@ function setupProperties() {
 				SVG.get(svgSelected).animate().attr({y:parseInt(this.value)});
 				break;
 			case "polygon":
+				SVG.get(svgSelected).animate().y(parseInt(this.value));
+				break;
 			case "ellipse":
 				SVG.get(svgSelected).animate().transform({y:parseInt(this.value)});
 				break;	
@@ -279,8 +284,11 @@ function setupProperties() {
 				SVG.get(svgSelected).animate().attr({width:parseInt(this.value)});
 				break;
 			case "polygon":
+				SVG.get(svgSelected).width(parseInt(this.value));
+				break;
 			case "ellipse":
 				SVG.get(svgSelected).width(parseInt(this.value));
+				SVG.get(svgSelected).translate().x(0);
 				break;	
 		}
 		palette.width = parseInt(this.value);
@@ -293,8 +301,11 @@ function setupProperties() {
 				SVG.get(svgSelected).animate().attr({height:parseInt(this.value)});
 				break;
 			case "polygon":
+				SVG.get(svgSelected).height(parseInt(this.value));
+				break;
 			case "ellipse":
 				SVG.get(svgSelected).height(parseInt(this.value));
+				SVG.get(svgSelected).translate().y(0);
 				break;	
 		}
 		palette.height = parseInt(this.value);
@@ -584,7 +595,7 @@ function plot(cXPos, cYPos) {
 				console.log("DRAW: rect");
 				console.log(cXPos + " : " + cYPos);
 			}
-			makeRect(palette.width, palette.height, cXPos-palette.width/2, cYPos-palette.height/2);
+			makeRect(palette.width, palette.height, cXPos-(palette.width/2), cYPos-(palette.height/2));
 			break;
 
 		// Plot ellipse
