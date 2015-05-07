@@ -48,6 +48,9 @@ var palette = {
 // 4 - polystar
 var toolType = 0;
 
+// SVG URI Blob
+var SVGBlob = null;
+
 // When the document loads
 $(document).ready(function (){
 
@@ -114,6 +117,17 @@ function setupViewListeners() {
 	// Output workspace button
 	$('#btn-ws-output').click(function() {
 		pageTransition("output");
+
+		// Clear any selections
+		if(svgSelected != null) {
+			$("#" + SVG.get(svgSelected).id()).click().mouseout();
+		}
+		$("#ws-output").html($("#ws-canvas").html());
+	});
+
+	// Download button
+	$("#btn-ws-download").click(function() {
+		exportSVG();
 	});
 
 	// Delete workspace button
@@ -139,8 +153,7 @@ function setupKeyBindings() {
 	// Escape key
 	$(document).keyup(function(e) {
 		if(svgSelected != null) {
-			var node = SVG.get(svgSelected).id();
-			if(e.keyCode == 27) $("#" + node).click().mouseout();
+			if(e.keyCode == 27) $("#" + SVG.get(svgSelected).id()).click().mouseout();
 		}
 	});	
 }
@@ -187,7 +200,7 @@ function setupToolkit() {
 	$('#canvas-width').change(function() {
 		if(($('#canvas-width').val() > 0) && ($('#canvas-width').val() <= 1000)) {
 			canvasWidth = $('#canvas-width').val();
-			$('#ws-canvas').css("width", canvasWidth);
+			$('#ws-canvas, #ws-output').css("width", canvasWidth);
 			paper.size(canvasWidth, canvasHeight);
 		}
 	});
@@ -196,7 +209,7 @@ function setupToolkit() {
 	$('#canvas-height').change(function() {
 		if(($('#canvas-height').val() > 0) && ($('#canvas-height').val() <= 1000)) {
 			canvasHeight = $('#canvas-height').val();
-			$('#ws-canvas').css("height", canvasHeight);
+			$('#ws-canvas, #ws-output').css("height", canvasHeight);
 			paper.size(canvasWidth, canvasHeight);
 		}
 	});
@@ -509,7 +522,7 @@ function pageTransition(dest) {
 function rocketInitialise() {
 
 	// SVGJS draw object
-	paper = SVG("ws-canvas").size(canvasWidth, canvasHeight);
+	paper = SVG("ws-canvas").size(canvasWidth, canvasHeight).id("svg-rocket");
 
 	// Holds SVG set that's being used at the moment
 	currentStateSet = paper.set();
@@ -840,8 +853,8 @@ function drawSpectacle() {
 
 var store;
 
-// IMPORT PATTERN
-function importPattern() {
+// IMPORT SVG
+function importSVG() {
 
 	var importedPattern = '<svg id="SvgjsSvg1000" xmlns="http://www.w3.org/2000/svg" version="1.1" width="550" height="400" xmlns:xlink="http://www.w3.org/1999/xlink"><rect id="SvgjsRect1006" width="25" height="25" fill="#dc09e9" stroke="none" stroke-width="1" x="325" y="70" radius="0"></rect><rect id="SvgjsRect1007" width="28" height="28" fill="#45725e" stroke="none" stroke-width="1" x="157" y="304" radius="0"></rect><rect id="SvgjsRect1009" width="25" height="25" fill="#934ade" stroke="none" stroke-width="1" x="281" y="27" radius="0"></rect><rect id="SvgjsRect1010" width="25" height="25" fill="#e81d2c" stroke="none" stroke-width="1" x="434" y="144" radius="0"></rect><rect id="SvgjsRect1008" width="57" height="57" fill="#22930b" stroke-width="0" x="213.5" y="176" radius="0"></rect><defs id="SvgjsDefs1001"></defs></svg>';		
 
@@ -855,6 +868,30 @@ function importPattern() {
 
 		currentStateSet.add(nextShape);
 	}
+}
+
+// EXPORT SVG
+function exportSVG() {
+
+	// Clear any selections
+	if(svgSelected != null) {
+		$("#" + SVG.get(svgSelected).id()).click().mouseout();
+	}
+
+	// Encode SVG as URI Blob
+	var data = new Blob([$("#ws-canvas").html()], {type: 'image/svg+xml'});
+
+	// Revoke any previous blobs
+	if(SVGBlob !== null) {
+		window.URL.revokeObjectURL(SVGBlob);
+	}
+
+	// Attach blob
+	SVGBlob = window.URL.createObjectURL(data);
+
+	// Add SVG data to download button
+	$("#btn-ws-download").attr("download", "svg-rocket.svg");
+	$("#btn-ws-download").attr("href", SVGBlob);
 }
 
 // Update and populate hand tool properties pane

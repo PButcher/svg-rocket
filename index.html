@@ -16,7 +16,8 @@
 				<div class="welcome">
 					<h2><i class="fa fa-rocket"></i> SVG Rocket</h2>
 					<h1>Create Stunning Patterns</h1>
-					<a id="btn-begin" href="#">Get Started</a>
+					<a id="btn-begin" href="#"><i class="fa fa-star"></i><p>New Pattern</p></a>
+					<a id="btn-import" href="#"><i class="fa fa-upload"></i><p>Import Pattern</p></a>
 				</div>
 			</section>
 			<section id="app" class="app">
@@ -27,7 +28,7 @@
 						<a id="btn-ws-output" href="#"><i class="fa fa-image"></i></a>
 					</nav>
 					<nav class="nav-right">
-						<a id="btn-ws-download" href="#"><i class="fa fa-download"></i></a>
+						<a id="btn-ws-download" href="#" download><i class="fa fa-download"></i></a>
 						<a id="btn-ws-new" href="#"><i class="fa fa-plus"></i></a>
 						<a id="btn-ws-bin" href="#"><i class="fa fa-trash-o"></i></a>
 					</nav>
@@ -48,8 +49,7 @@
 
 					</div>
 					<div id="ws-canvas-wrapper" class="ws-canvas-wrapper">
-						<figure id="ws-canvas" class="ws-canvas">
-						</figure>
+						<figure id="ws-canvas" class="ws-canvas"></figure>
 					</div>
 					<div class="ws-canvas-properties">
 						<section id="properties-help">
@@ -284,7 +284,9 @@
 					</div>
 				</section>
 				<section id="workspace-output" class="workspace-output">
-				
+					<div class="ws-output-wrapper">
+						<figure id="ws-output" class="ws-output"></figure>
+					</div>
 				</section>
 			</section>
 		</div>
