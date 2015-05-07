@@ -89,13 +89,14 @@ header {
     line-height: 50px;
     background-color: #0C0C0C;
     text-align: center;
-    text-decoration: none;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); }
+    text-decoration: none; }
     .welcome a i {
       margin-right: 15px; }
     .welcome a p {
       color: #FFF;
       display: inline; }
+    .welcome a:hover {
+      background-color: #101010; }
 
 .workspace-canvas, .workspace-output {
   display: none;

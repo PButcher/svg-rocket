@@ -1,5 +1,7 @@
 // Colours
 
+$color-w-btn-d: #0C0C0C;
+$color-w-btn-l: #101010;
 $color-background: #151515;
 $color-workspace: #333;
 $color-gray: #666;
@@ -122,10 +124,10 @@ header {
 		height: 50px;
 		margin: 0px 10px;
 		line-height: 50px;
-		background-color: #0C0C0C;
+		background-color: $color-w-btn-d;
 		text-align: center;
 		text-decoration: none;
-		box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+//		box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 
 		i {
 			margin-right: 15px;
@@ -133,6 +135,9 @@ header {
 		p {
 			color: $color-white;
 			display: inline;
+		}
+		&:hover {
+			background-color: $color-w-btn-l;
 		}
 	}
 }
