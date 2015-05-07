@@ -145,6 +145,9 @@ function setupViewListeners() {
 		}
 		$("#ws-output").html($("#ws-canvas").html());
 		$("#svg-export-field").val($("#ws-canvas").html());
+		$("#svg-export-field").focus(function() {
+			$(this).select();
+		});
 	});
 
 	// Download button
